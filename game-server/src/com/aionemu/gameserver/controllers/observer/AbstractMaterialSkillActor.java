@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
+import com.aionemu.gameserver.custom.battleground.Battleground1x1Handler;
 import com.aionemu.gameserver.geoEngine.scene.Spatial;
 import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.Creature;
@@ -97,6 +98,9 @@ public abstract class AbstractMaterialSkillActor extends AbstractCollisionObserv
 				return;
 			if (!creature.isSpawned() || creature.isDead())
 				return;
+			if (creature instanceof Player player && player.getWorldId() == 301110000 && player.getWorldMapInstance().getInstanceHandler() instanceof Battleground1x1Handler) {
+				return;
+			}
 			if (creature instanceof Player player && player.isProtectionActive())
 				return;
 			if ((skill = findFirstSkillWithMatchingCondition()) == null) // skip if currently nothing matches (fires are off while raining)

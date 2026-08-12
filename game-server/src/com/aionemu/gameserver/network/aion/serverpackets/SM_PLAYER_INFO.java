@@ -2,6 +2,7 @@ package com.aionemu.gameserver.network.aion.serverpackets;
 
 import com.aionemu.gameserver.controllers.movement.MovementMask;
 import com.aionemu.gameserver.controllers.movement.PlayerMoveController;
+import com.aionemu.gameserver.custom.battleground.Battleground1x1Handler;
 import com.aionemu.gameserver.geoEngine.math.Vector3f;
 import com.aionemu.gameserver.model.gameobjects.player.CustomPlayerState;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -67,15 +68,33 @@ public class SM_PLAYER_INFO extends AbstractPlayerInfoPacket {
 			writeB(new byte[13]); // TODO find out what this data controls
 
 		writeC(player.getHeading());
+		
+		Battleground1x1Handler battleground = activePlayer.getWorldId() == player.getWorldId()
+			&& activePlayer.getInstanceId() == player.getInstanceId()
+			&& activePlayer.getWorldMapInstance().getInstanceHandler() instanceof Battleground1x1Handler handler ? handler : null;
+		
+		boolean hideIdentify = battleground != null;
+		
+		String displayedName = hideIdentify ? player.getPlayerClass().name() : player.getName(true);
 
-		writeS(player.getName(true));
+		writeS(displayedName);
 
 		writeH(pcd.getTitleId());
 		writeH(player.getCommonData().isHaveMentorFlag() ? 1 : 0);
 
 		writeH(player.getCastingSkillId());
-
-		if (player.isLegionMember()) {
+		
+		
+		if (hideIdentify) {
+			writeD(player.getObjectId());
+			writeC(0);
+			writeC(0);
+			writeC(0);
+			writeC(0);
+			writeC(0);
+			writeC(0);
+			writeS("Wins: " + battleground.getWins(player));
+		}else if (player.isLegionMember()) {
 			writeD(player.getLegion().getLegionId());
 			writeC(player.getLegion().getLegionEmblem().getEmblemId());
 			writeC(player.getLegion().getLegionEmblem().getEmblemType().getValue());
@@ -205,7 +224,7 @@ public class SM_PLAYER_INFO extends AbstractPlayerInfoPacket {
 		writeH(player.getLevel()); // [level]
 		writeH(player.getPlayerSettings().getDisplay()); // unk - 0x04
 		writeH(player.getPlayerSettings().getDeny()); // unk - 0x00
-		writeH(player.getAbyssRank().getRank().getId()); // abyss rank
+		writeH(hideIdentify ? 0 : player.getAbyssRank().getRank().getId()); // abyss rank
 		writeH(0x00); // unk - 0x01
 		writeD(player.getTarget() == null ? 0 : player.getTarget().getObjectId());
 		writeC(0); // suspect id

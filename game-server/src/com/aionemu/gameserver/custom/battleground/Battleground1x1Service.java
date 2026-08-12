@@ -88,6 +88,10 @@ public final class Battleground1x1Service {
 			PacketSendUtility.sendMessage(player, "You cannot join the queue in your current state.");
 			return true;
 		}
+		if (player.isInGroup() || player.isInAlliance() || player.isInLeague()) {
+			PacketSendUtility.sendMessage(player, "You cannot join the queue in group/alliance.");
+			return true;
+		}
 		if (queue.stream().anyMatch(p -> p.getObjectId() == player.getObjectId())) {
 			PacketSendUtility.sendMessage(player, "You are already registered for the 1x1 Battleground.");
 			return true;

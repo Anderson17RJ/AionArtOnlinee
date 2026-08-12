@@ -49,8 +49,8 @@ public final class Battleground1x1Handler extends GeneralInstanceHandler {
 	private final WorldPosition firstOrigin;
 	private final WorldPosition secondOrigin;
 	private final List<Future<?>> tasks = new ArrayList<>();
-	private int firstWins;
-	private int secondWins;
+	private volatile int firstWins;
+	private volatile int secondWins;
 	private int round;
 	private boolean started;
 	private boolean roundActive;
@@ -302,6 +302,14 @@ public final class Battleground1x1Handler extends GeneralInstanceHandler {
 	private void cancelTasks() {
 		tasks.forEach(task -> task.cancel(false));
 		tasks.clear();
+	}
+	
+	public int getWins(Player player) {
+		if (player.equals(first))
+			return firstWins;
+		if (player.equals(second))
+			return secondWins;
+		return 0;
 	}
 
 	private boolean isParticipant(Player player) {
