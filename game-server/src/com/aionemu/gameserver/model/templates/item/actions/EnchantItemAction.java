@@ -88,7 +88,7 @@ public class EnchantItemAction extends AbstractItemAction {
 			return;
 
 		boolean isEnchantmentStone = parentItem.getItemTemplate().getItemGroup() == ItemGroup.ENCHANTMENT;
-		int enchantDurationMillis = isEnchantmentStone ? 4000 : 2000;
+		int enchantDurationMillis = isEnchantmentStone ? 4000 : 500;
 
 		StartMovingListener move = new StartMovingListener() {
 
