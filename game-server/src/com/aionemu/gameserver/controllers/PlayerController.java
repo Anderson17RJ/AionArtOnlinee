@@ -352,6 +352,8 @@ public class PlayerController extends CreatureController<Player> {
 	}
 
 	public void scheduleShowResurrectionOptions() {
+		if (getOwner().getWorldMapInstance().getInstanceHandler().suppressResurrectionOptions())
+			return;
 		ThreadPoolManager.getInstance().schedule(() -> {
 			// teleportation task can be assigned shortly after death (see PlayerReviveService#scheduleReviveAtBase)
 			if (getOwner().isDead() && !hasTask(TaskId.TELEPORT))

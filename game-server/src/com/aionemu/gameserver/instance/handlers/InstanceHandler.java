@@ -104,4 +104,5 @@ public interface InstanceHandler {
 	boolean allowSelfReviveByItem();
 	boolean allowKiskRevive();
 	boolean allowInstanceRevive();
+	boolean suppressResurrectionOptions();
 }

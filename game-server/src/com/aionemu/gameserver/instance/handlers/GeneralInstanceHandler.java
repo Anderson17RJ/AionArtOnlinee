@@ -275,6 +275,11 @@ public class GeneralInstanceHandler implements InstanceHandler {
 		return instance.getTemplate().isInstance() && getClass() != GeneralInstanceHandler.class || instance.getTemplate().getWorldType() == WorldType.PANESTERRA;
 	}
 
+	@Override
+	public boolean suppressResurrectionOptions() {
+		return false;
+	}
+
 	protected boolean isRestrictedToInstance(Item item) {
 		return item.getItemTemplate().isItemRestrictedToWorld(instance.getMapId());
 	}

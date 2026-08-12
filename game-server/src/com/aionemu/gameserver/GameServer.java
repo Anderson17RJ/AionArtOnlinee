@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 
 import com.aionemu.gameserver.custom.farmingmap.FarmMapService;
+import com.aionemu.gameserver.custom.battleground.Battleground1x1Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,6 +178,7 @@ public class GameServer {
 
 		PvpMapService.getInstance().init();
 		FarmMapService.getInstance().init();
+		Battleground1x1Service.getInstance().init();
 		CustomInstanceService.getInstance();
 		DataManager.waitForValidationToFinishAndShutdownOnFail();
 		WebshopHttpServer.start();
