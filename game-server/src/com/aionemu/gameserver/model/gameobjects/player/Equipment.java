@@ -341,6 +341,171 @@ public class Equipment implements Persistable {
 		}
 	}
 
+	/**
+	 * Replaces regular equipment with the items referenced by a saved gear set. The set contains only item object IDs and slots; it does not own items.
+	 */
+	public GearSetLoadResult loadGearSet(Map<Integer, Long> savedItems) {
+		if (savedItems == null || savedItems.isEmpty())
+			return GearSetLoadResult.EMPTY_SET;
+
+		synchronized (this) {
+			Map<Item, Long> targetItems = new LinkedHashMap<>();
+			long occupiedSlots = 0;
+			for (Map.Entry<Integer, Long> entry : savedItems.entrySet()) {
+				Item item = getEquippedItemByObjId(entry.getKey());
+				if (item == null)
+					item = owner.getInventory().getItemByObjId(entry.getKey());
+				if (item == null)
+					return GearSetLoadResult.ITEM_MISSING;
+				if (targetItems.put(item, entry.getValue()) != null)
+					return GearSetLoadResult.INVALID_SET;
+				if (!isValidGearSetItem(item, entry.getValue()))
+					return GearSetLoadResult.ITEM_CANNOT_BE_EQUIPPED;
+				if ((occupiedSlots & entry.getValue()) != 0)
+					return GearSetLoadResult.INVALID_SET;
+				occupiedSlots |= entry.getValue();
+			}
+
+			// Free every regular gear slot not already occupied by its requested item. Stigmas and power shards deliberately remain untouched.
+			for (Item equippedItem : getEquippedItems()) {
+				if (equippedItem.getItemTemplate().isStigma() || equippedItem.getItemTemplate().getItemGroup() == ItemGroup.POWER_SHARDS)
+					continue;
+				Long targetSlot = targetItems.get(equippedItem);
+				if (targetSlot == null || equippedItem.getEquipmentSlot() != targetSlot)
+					unEquipItem(equippedItem.getObjectId(), false);
+			}
+
+			for (Map.Entry<Item, Long> targetItem : targetItems.entrySet()) {
+				Item item = targetItem.getKey();
+				if (item.isEquipped() && item.getEquipmentSlot() == targetItem.getValue())
+					continue;
+				if (equipItem(item.getObjectId(), targetItem.getValue()) == null)
+					return GearSetLoadResult.ITEM_CANNOT_BE_EQUIPPED; // should not occur after validation, but never report success for a partial switch
+			}
+			PacketSendUtility.broadcastPacket(owner, new SM_UPDATE_PLAYER_APPEARANCE(owner.getObjectId(), getEquippedForAppearance()), true);
+			return GearSetLoadResult.SUCCESS;
+		}
+	}
+
+	/** Replaces only stigma stones with the items referenced by a saved stigma set. */
+	public StigmaSetLoadResult loadStigmaSet(Map<Integer, Long> savedItems) {
+		if (savedItems == null || savedItems.isEmpty())
+			return StigmaSetLoadResult.EMPTY_SET;
+		if (owner.getController().isInCombat())
+			return StigmaSetLoadResult.COMBAT_MODE;
+		if (owner.isDead())
+			return StigmaSetLoadResult.DEAD;
+
+		synchronized (this) {
+			Map<Item, Long> targetItems = new LinkedHashMap<>();
+			long occupiedSlots = 0;
+			long price = 0;
+			for (Map.Entry<Integer, Long> entry : savedItems.entrySet()) {
+				Item item = getEquippedItemByObjId(entry.getKey());
+				if (item == null)
+					item = owner.getInventory().getItemByObjId(entry.getKey());
+				if (item == null)
+					return StigmaSetLoadResult.ITEM_MISSING;
+				if (targetItems.put(item, entry.getValue()) != null || !isValidStigmaSetItem(item, entry.getValue()) || (occupiedSlots & entry.getValue()) != 0)
+					return StigmaSetLoadResult.INVALID_SET;
+				occupiedSlots |= entry.getValue();
+				if (!item.isEquipped() || item.getEquipmentSlot() != entry.getValue())
+					price += StigmaService.getEquipPrice(owner, item);
+			}
+			if (owner.getInventory().getKinah() < price)
+				return StigmaSetLoadResult.NOT_ENOUGH_KINAH;
+
+			for (Item equippedItem : getEquippedItemsAllStigma()) {
+				Long targetSlot = targetItems.get(equippedItem);
+				if (targetSlot == null || equippedItem.getEquipmentSlot() != targetSlot)
+					unEquipItem(equippedItem.getObjectId(), false);
+			}
+			for (Map.Entry<Item, Long> targetItem : targetItems.entrySet()) {
+				Item item = targetItem.getKey();
+				if ((!item.isEquipped() || item.getEquipmentSlot() != targetItem.getValue()) && equipItem(item.getObjectId(), targetItem.getValue()) == null)
+					return StigmaSetLoadResult.INVALID_SET; // all mutable checks were made above; never report a partial switch as successful
+			}
+			return StigmaSetLoadResult.SUCCESS;
+		}
+	}
+
+	private boolean isValidGearSetItem(Item item, long slot) {
+		ItemTemplate template = item.getItemTemplate();
+		if (template.isStigma() || template.getItemGroup() == ItemGroup.POWER_SHARDS || !item.isIdentified() || template.isSoulBound() && !item.isSoulBound())
+			return false;
+		if (slot != getEffectiveEquipmentSlot(template, slot))
+			return false;
+		if (!template.isClassSpecific(owner.getPlayerClass()) || template.getRequiredLevel(owner.getPlayerClass()) > owner.getLevel()
+			|| template.getRequiredLevel(owner.getPlayerClass()) == -1 || template.getMaxLevelRestrict(owner.getPlayerClass()) != 0
+				&& owner.getLevel() > template.getMaxLevelRestrict(owner.getPlayerClass()) || template.getRace() != Race.PC_ALL && template.getRace() != owner.getRace()
+			|| template.getUseLimits().getGenderPermitted() != null && template.getUseLimits().getGenderPermitted() != owner.getGender() || !verifyRankLimits(item)
+			|| !checkAvailableEquipSkills(item) || !checkDualWieldRestriction(item, slot))
+			return false;
+		ItemSlot[] slots = ItemSlot.getSlotsFor(slot);
+		return slots.length > 0 && !(slots.length == 2 && !template.isTwoHandWeapon() || slots.length > 2)
+			&& (ItemSlot.MAIN_OFF_OR_SUB_OFF.getSlotIdMask() & slot) == 0 && template.getItemSlot() != 0 && (template.getItemSlot() & slot) == slot;
+	}
+
+	private boolean isValidStigmaSetItem(Item item, long slot) {
+		ItemTemplate template = item.getItemTemplate();
+		if (!template.isStigma() || !item.isIdentified() || template.isSoulBound() && !item.isSoulBound() || !ItemSlot.isStigma(slot)
+			|| !StigmaService.isPossibleStigmaSlot(owner, slot))
+			return false;
+		if (!template.isClassSpecific(owner.getPlayerClass()) || template.getRequiredLevel(owner.getPlayerClass()) > owner.getLevel()
+			|| template.getRequiredLevel(owner.getPlayerClass()) == -1 || template.getMaxLevelRestrict(owner.getPlayerClass()) != 0
+				&& owner.getLevel() > template.getMaxLevelRestrict(owner.getPlayerClass()) || template.getRace() != Race.PC_ALL && template.getRace() != owner.getRace()
+			|| template.getUseLimits().getGenderPermitted() != null && template.getUseLimits().getGenderPermitted() != owner.getGender() || !verifyRankLimits(item)
+			|| !checkAvailableEquipSkills(item))
+			return false;
+		return ItemSlot.getSlotsFor(slot).length == 1 && (template.getItemSlot() & slot) == slot;
+	}
+
+	private long getEffectiveEquipmentSlot(ItemTemplate template, long slot) {
+		if (template.isTwoHandWeapon())
+			return ItemSlot.MAIN_OR_SUB.getSlotIdMask();
+		if (template.isOneHandWeapon() && !WeaponDualEffect.hasDualWieldEffect(owner))
+			return ItemSlot.MAIN_HAND.getSlotIdMask();
+		return slot;
+	}
+
+	public enum GearSetLoadResult {
+		SUCCESS(""),
+		EMPTY_SET("the set is empty"),
+		ITEM_MISSING("one or more saved items are no longer in your inventory"),
+		ITEM_CANNOT_BE_EQUIPPED("one or more items no longer meet the equipment requirements"),
+		INVALID_SET("the saved set has conflicting equipment slots");
+
+		private final String message;
+
+		GearSetLoadResult(String message) {
+			this.message = message;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+	}
+
+	public enum StigmaSetLoadResult {
+		SUCCESS(""),
+		EMPTY_SET("the set is empty"),
+		ITEM_MISSING("one or more saved stigmas are no longer in your inventory"),
+		NOT_ENOUGH_KINAH("you do not have enough Kinah to equip this stigma set"),
+		INVALID_SET("the saved set is invalid or contains stigmas you cannot equip"),
+		COMBAT_MODE("you cannot change Stigmas in combat mode"),
+		DEAD("you cannot change Stigmas while dead");
+
+		private final String message;
+
+		StigmaSetLoadResult(String message) {
+			this.message = message;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+	}
+
 	public Set<Integer> getEquippedItemIds() {
 		synchronized (equipment) {
 			return equipment.values().stream().map(Item::getItemId).collect(Collectors.toSet());

@@ -66,23 +66,26 @@ public class StigmaService {
 				}
 			}
 
-			long kinahcount = 25000;
-			// Sets the price for equipping stigma during mission in Space of Destiny [ID: 320070000] and Sliver of darkness [ID: 310070000]
-			if ((player.getRace() == Race.ASMODIANS && player.getWorldId() == 320070000)
-				|| (player.getRace() == Race.ELYOS && player.getWorldId() == 310070000))
-				kinahcount = 1000;
-			else if (resultItem.getItemTemplate().getItemQuality().equals(ItemQuality.LEGEND))
-				kinahcount = 50000;
-			else if (resultItem.getItemTemplate().getItemQuality().equals(ItemQuality.UNIQUE))
-				kinahcount = 100000;
-
-			if (!player.getInventory().tryDecreaseKinah(PricesService.getPriceForService(kinahcount, player.getRace()))) {
+			if (!player.getInventory().tryDecreaseKinah(getEquipPrice(player, resultItem))) {
 				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_STIGMA_NOT_ENOUGH_MONEY());
 				return false;
 			}
 			addStigmaSkills(player, stigmaInfo, stigmaLevel);
 		}
 		return true;
+	}
+
+	public static long getEquipPrice(Player player, Item stigma) {
+		long kinahCount = 25000;
+		// Sets the price for equipping stigma during mission in Space of Destiny [ID: 320070000] and Sliver of darkness [ID: 310070000]
+		if ((player.getRace() == Race.ASMODIANS && player.getWorldId() == 320070000)
+			|| (player.getRace() == Race.ELYOS && player.getWorldId() == 310070000))
+			kinahCount = 1000;
+		else if (stigma.getItemTemplate().getItemQuality().equals(ItemQuality.LEGEND))
+			kinahCount = 50000;
+		else if (stigma.getItemTemplate().getItemQuality().equals(ItemQuality.UNIQUE))
+			kinahCount = 100000;
+		return PricesService.getPriceForService(kinahCount, player.getRace());
 	}
 
 	public static void onPlayerLogin(Player player) {
@@ -324,11 +327,14 @@ public class StigmaService {
 		return 0;
 	}
 
-	private static boolean isPossibleEquippedStigma(Player player, Item item) {
+	public static boolean isPossibleEquippedStigma(Player player, Item item) {
 		if (!item.getItemTemplate().isStigma())
 			return false;
 
-		long itemSlotToEquip = item.getEquipmentSlot();
+		return isPossibleStigmaSlot(player, item.getEquipmentSlot());
+	}
+
+	public static boolean isPossibleStigmaSlot(Player player, long itemSlotToEquip) {
 
 		// Stigma
 		if (ItemSlot.isRegularStigma(itemSlotToEquip)) {
