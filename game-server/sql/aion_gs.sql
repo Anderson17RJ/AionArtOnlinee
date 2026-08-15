@@ -844,6 +844,32 @@ CREATE TABLE `player_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for `player_gear_sets`
+-- ----------------------------
+DROP TABLE IF EXISTS `player_gear_sets`;
+CREATE TABLE `player_gear_sets` (
+  `player_id` int NOT NULL,
+  `set_name` varchar(32) NOT NULL,
+  `item_unique_id` int NOT NULL,
+  `equipment_slot` bigint NOT NULL,
+  PRIMARY KEY (`player_id`,`set_name`,`item_unique_id`),
+  CONSTRAINT `pgs_player_fk` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for `player_stigma_sets`
+-- ----------------------------
+DROP TABLE IF EXISTS `player_stigma_sets`;
+CREATE TABLE `player_stigma_sets` (
+  `player_id` int NOT NULL,
+  `set_name` varchar(32) NOT NULL,
+  `item_unique_id` int NOT NULL,
+  `equipment_slot` bigint NOT NULL,
+  PRIMARY KEY (`player_id`,`set_name`,`item_unique_id`),
+  CONSTRAINT `pss_player_fk` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for `player_skills`
 -- ----------------------------
 DROP TABLE IF EXISTS `player_skills`;
