@@ -870,6 +870,18 @@ CREATE TABLE `player_stigma_sets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for `player_wardrobe_skins`
+-- ----------------------------
+DROP TABLE IF EXISTS `player_wardrobe_skins`;
+CREATE TABLE `player_wardrobe_skins` (
+  `player_id` int NOT NULL,
+  `skin_item_id` int NOT NULL,
+  `unlocked_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`player_id`,`skin_item_id`),
+  CONSTRAINT `pws_player_fk` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for `player_skills`
 -- ----------------------------
 DROP TABLE IF EXISTS `player_skills`;

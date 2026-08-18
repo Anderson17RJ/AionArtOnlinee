@@ -20,6 +20,14 @@ CREATE TABLE IF NOT EXISTS `player_stigma_sets` (
   CONSTRAINT `pss_player_fk` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `player_wardrobe_skins` (
+  `player_id` int NOT NULL,
+  `skin_item_id` int NOT NULL,
+  `unlocked_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`player_id`,`skin_item_id`),
+  CONSTRAINT `pws_player_fk` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DELETE FROM inventory WHERE item_id IN (182007170, 188100252, 188100253, 188100254, 188100255, 188100256);
 
 ALTER TABLE `bookmark`
