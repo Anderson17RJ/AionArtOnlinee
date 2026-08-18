@@ -8,6 +8,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.services.HTMLService;
+import com.aionemu.gameserver.services.WardrobeService;
 
 /**
  * @author xTz
@@ -41,7 +42,8 @@ public class CM_QUESTIONNAIRE extends AionClientPacket {
 	protected void runImpl() {
 		if (objectId > 0) {
 			Player player = getConnection().getActivePlayer();
-			HTMLService.getReward(player, objectId, items);
+			if (!WardrobeService.handleResponse(player, objectId, items))
+				HTMLService.getReward(player, objectId, items);
 		}
 	}
 }
