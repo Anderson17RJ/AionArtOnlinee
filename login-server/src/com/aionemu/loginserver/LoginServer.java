@@ -14,6 +14,7 @@ import com.aionemu.loginserver.dao.BannedMacDAO;
 import com.aionemu.loginserver.network.NetConnector;
 import com.aionemu.loginserver.network.ncrypt.KeyGen;
 import com.aionemu.loginserver.service.PlayerTransferService;
+import com.aionemu.loginserver.service.AutoLoginHttpServer;
 
 import ch.qos.logback.classic.LoggerContext;
 
@@ -36,6 +37,7 @@ class LoginServer {
 		BannedHddDAO.cleanExpiredBans();
 
 		PlayerTransferService.getInstance();
+		AutoLoginHttpServer.start();
 
 		VersionInfo.logAll(LoginServer.class);
 		SystemInfo.logAll();
@@ -49,6 +51,7 @@ class LoginServer {
 		@Override
 		public void run() {
 			PlayerTransferService.getInstance().shutdown();
+			AutoLoginHttpServer.stop();
 			NetConnector.shutdown();
 			// shut down logger factory to flush all pending log messages
 			((LoggerContext) LoggerFactory.getILoggerFactory()).stop();

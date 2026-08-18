@@ -168,6 +168,59 @@ public class AccountController {
 			return AionAuthResponse.STR_L2AUTH_S_INCORRECT_PWD;
 		}
 
+		return finishLogin(account, connection);
+	}
+
+	/**
+	 * Authenticates an account that has already been verified by a single-use launcher token.
+	 */
+	public static AionAuthResponse loginWithAutoLoginToken(String accountName, LoginConnection connection) {
+		if (BannedIpController.isBanned(connection.getIP())) {
+			return AionAuthResponse.STR_L2AUTH_S_BLOCKED_IP;
+		}
+
+		Account account = loadAccount(accountName);
+		if (account == null) {
+			return AionAuthResponse.STR_L2AUTH_S_ACCOUNT_LOAD_FAIL;
+		}
+		return finishLogin(account, connection);
+	}
+
+	/**
+	 * Verifies launcher credentials without creating a LoginConnection or retaining a password.
+	 * Returns the canonical account name when the account may receive a token, otherwise {@code null}.
+	 */
+	public static String validateAutoLoginCredentials(String name, String password, String ipAddress) {
+		if (name == null || password == null || BannedIpController.isBanned(ipAddress)) {
+			return null;
+		}
+
+		String accountName = name;
+		if (Config.useExternalAuth()) {
+			ExternalAuth.Response auth = ExternalAuth.authenticate(name, password);
+			if (auth == null || AionAuthResponse.getByIdOrDefault(auth.aionAuthResponseId(), AionAuthResponse.STR_L2AUTH_UNKNOWN4) != AionAuthResponse.STR_L2AUTH_S_ALL_OK) {
+				return null;
+			}
+			accountName = auth.accountId();
+		}
+
+		Account account = loadAccount(accountName);
+		if (account == null && Config.ACCOUNT_AUTO_CREATION && !accountName.isEmpty()) {
+			account = createAccount(accountName, password);
+		}
+		if (account == null || (!Config.useExternalAuth() && !account.getPasswordHash().equals(AccountUtils.encodePassword(password)))) {
+			return null;
+		}
+		if (account.getActivated() != 1 || AccountTimeController.isAccountExpired(account) || AccountTimeController.isAccountPenaltyActive(account)) {
+			return null;
+		}
+		if (account.getIpForce() != null && !NetworkUtils.checkIPMatching(account.getIpForce(), ipAddress)) {
+			return null;
+		}
+		return account.getName();
+	}
+
+	private static AionAuthResponse finishLogin(Account account, LoginConnection connection) {
 		// if account is not activated
 		if (account.getActivated() != 1) {
 			return AionAuthResponse.STR_L2AUTH_S_AGREE_GAME;

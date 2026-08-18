@@ -73,6 +73,24 @@ public class Config {
 	public static boolean ENABLE_BRUTEFORCE_PROTECTION;
 
 	/**
+	 * Enables the development-only HTTP endpoint used by the launcher to obtain a short-lived auto-login token.
+	 */
+	@Property(key = "loginserver.autologin.http.enabled", defaultValue = "false")
+	public static boolean AUTO_LOGIN_HTTP_ENABLED;
+
+	/**
+	 * Bind address of the local launcher API. Keep this bound to loopback until it is placed behind HTTPS.
+	 */
+	@Property(key = "loginserver.autologin.http.socket_address", defaultValue = "127.0.0.1:8091")
+	public static InetSocketAddress AUTO_LOGIN_HTTP_SOCKET_ADDRESS;
+
+	/**
+	 * Lifetime, in seconds, of an auto-login token. Tokens are single-use regardless of this value.
+	 */
+	@Property(key = "loginserver.autologin.token_ttl_seconds", defaultValue = "60")
+	public static int AUTO_LOGIN_TOKEN_TTL_SECONDS;
+
+	/**
 	 * Log successful gameserver logins including connection data to DB
 	 */
 	@Property(key = "loginserver.log.logins", defaultValue = "false")

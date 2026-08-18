@@ -84,6 +84,9 @@ public class AionPacketHandlerFactory {
 					case 0x00:
 						msg = new CM_LOGIN(data, client, opCode);
 						break;
+					case 0x0B:
+						msg = new CM_EXTERNAL_TOKEN_LOGIN(data, client, opCode);
+						break;
 					default:
 						unknownPacket(opCode, state, data);
 				}
