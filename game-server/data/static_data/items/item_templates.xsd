@@ -183,6 +183,7 @@
 			<xs:element name="megaphone" type="MegaphoneAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="pack" type="PackAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="tampering" type="TamperingAction" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="keycombine" type="KeyCombineAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="multireturn" type="MultiReturnAction" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -425,6 +426,11 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="TamperingAction">
+		<xs:complexContent>
+			<xs:extension base="AbstractItemAction"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="KeyCombineAction">
 		<xs:complexContent>
 			<xs:extension base="AbstractItemAction"/>
 		</xs:complexContent>

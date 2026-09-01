@@ -28,6 +28,7 @@ public class ItemActions {
 		@XmlElement(name = "polish", type = PolishAction.class), @XmlElement(name = "composition", type = CompositionAction.class),
 		@XmlElement(name = "tuning", type = TuningAction.class), @XmlElement(name = "megaphone", type = MegaphoneAction.class),
 		@XmlElement(name = "pack", type = PackAction.class), @XmlElement(name = "tampering", type = TamperingAction.class),
+		@XmlElement(name = "keycombine", type = KeyCombineAction.class),
 		@XmlElement(name = "multireturn", type = MultiReturnAction.class) })
 	private List<AbstractItemAction> itemActions;
 
