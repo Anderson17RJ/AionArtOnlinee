@@ -10,10 +10,12 @@ import com.aionemu.gameserver.ai.HpPhases;
 import com.aionemu.gameserver.controllers.attack.AggroTarget;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.serverpackets.SM_FORCED_MOVE;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.PositionUtil;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 
@@ -25,10 +27,15 @@ import ai.AggressiveNpcAI;
 @AIName("brigadegeneraltahabata")
 public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhases.PhaseHandler {
 
-	private final HpPhases hpPhases = new HpPhases(96, 75, 60, 55, 40, 25, 20, 10, 7);
+	private final HpPhases hpPhases = new HpPhases(96, 75, 60, 55, 50, 40, 25, 20, 15, 10, 7);
 	private AtomicBoolean isHome = new AtomicBoolean(true);
 	private Future<?> piercingStrikeTask;
 	private Future<?> fireStormTask;
+	private Future<?> gatheringTask;
+	private Player markedPlayer;
+	private static final int GATHERING_MARK_SKILL = 50048;
+	private static final int GATHERING_PROTECTION_SKILL = 50049;
+	private static final int GATHERING_HITKILL_SKILL = 50050;
 
 	public BrigadeGeneralTahabataAI(Npc owner) {
 		super(owner);
@@ -115,6 +122,11 @@ public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhase
 			case 55:
 				lavaEruptionEvent(283118);// 4.0
 				break;
+			case 50:
+			case 15:
+				if (getPosition().getWorldMapInstance().getMapId() == 301120000)
+					startGatheringMechanic();
+				break;
 			case 40:
 			case 25:
 				AIActions.useSkill(this, 20761);
@@ -132,6 +144,47 @@ public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhase
 				spawn(283102, 679.88f, 1068.88f, 497.88f, (byte) 0);// 4.0
 				break;
 		}
+	}
+
+	private void startGatheringMechanic() {
+		cancelGatheringMechanic();
+		java.util.List<Player> players = getPosition().getWorldMapInstance().getPlayersInside().stream()
+			.filter(player -> !player.isDead()).collect(java.util.stream.Collectors.toList());
+		if (players.isEmpty())
+			return;
+		markedPlayer = players.get(Rnd.get(0, players.size() - 1));
+		Skill markSkill = SkillEngine.getInstance().getSkill(getOwner(), GATHERING_MARK_SKILL, 60, markedPlayer);
+		if (markSkill != null)
+			markSkill.useWithoutPropSkill();
+		gatheringTask = ThreadPoolManager.getInstance().schedule(this::resolveGatheringMechanic, 10000);
+	}
+
+	private void resolveGatheringMechanic() {
+		Player mark = markedPlayer;
+		if (mark != null && !mark.isDead()) {
+			Skill protection = SkillEngine.getInstance().getSkill(getOwner(), GATHERING_PROTECTION_SKILL, 60, mark);
+			if (protection != null)
+				protection.useWithoutPropSkill();
+			for (Player player : getPosition().getWorldMapInstance().getPlayersInside()) {
+				if (!player.isDead() && player != mark && PositionUtil.isInRange(mark, player, 2)) {
+					protection = SkillEngine.getInstance().getSkill(getOwner(), GATHERING_PROTECTION_SKILL, 60, player);
+					if (protection != null)
+						protection.useWithoutPropSkill();
+				}
+			}
+		}
+		Skill hitkill = SkillEngine.getInstance().getSkill(getOwner(), GATHERING_HITKILL_SKILL, 60, getOwner());
+		if (hitkill != null)
+			hitkill.useNoAnimationSkill();
+		markedPlayer = null;
+		gatheringTask = null;
+	}
+
+	private void cancelGatheringMechanic() {
+		if (gatheringTask != null && !gatheringTask.isCancelled())
+			gatheringTask.cancel(true);
+		gatheringTask = null;
+		markedPlayer = null;
 	}
 
 	private void lavaEruptionEvent(final int floorId) {
@@ -169,6 +222,7 @@ public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhase
 		deleteAdds();
 		cancelPiercingStrike();
 		cancelFireStorm();
+		cancelGatheringMechanic();
 	}
 
 	@Override
@@ -176,6 +230,7 @@ public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhase
 		super.handleDespawned();
 		cancelPiercingStrike();
 		cancelFireStorm();
+		cancelGatheringMechanic();
 	}
 
 	@Override
@@ -185,6 +240,7 @@ public class BrigadeGeneralTahabataAI extends AggressiveNpcAI implements HpPhase
 		deleteAdds();
 		cancelPiercingStrike();
 		cancelFireStorm();
+		cancelGatheringMechanic();
 	}
 
 }

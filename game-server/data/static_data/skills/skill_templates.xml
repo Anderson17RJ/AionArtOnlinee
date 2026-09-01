@@ -204627,4 +204627,33 @@
 			<move_casting allow="false" />
 		</useconditions>
 	</skill_template>
+	<skill_template skill_id="50048" name="Tahabata Gathering Mark" nameId="12283518" stack="TAHABATA_GATHERING_MARK" lvl="1" skilltype="MAGICAL" skill_category="MENTAL_DEBUFF" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="0" duration="0">
+		<properties first_target="ME" first_target_range="1" target_relation="ALL" target_type="ONLYONE" target_species="PC" />
+		<useconditions>
+			<move_casting allow="false" />
+		</useconditions>
+		<effects>
+			<statdown duration2="10000" effectid="10230080" e="1" basiclvl="100" noresist="true" element="FIRE">
+				<change stat="CONCENTRATION" func="ADD" value="-1" />
+			</statdown>
+		</effects>
+	</skill_template>
+	<skill_template skill_id="50049" name="Tahabata Gathering Protection" nameId="12283521" stack="TAHABATA_GATHERING_PROTECTION" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="0" duration="0">
+		<properties first_target="ME" first_target_range="1" target_relation="ALL" target_type="ONLYONE" target_species="PC" />
+		<useconditions>
+			<move_casting allow="false" />
+		</useconditions>
+		<effects>
+			<alwaysresist value="5000" duration2="11000" effectid="10230081" e="1" noresist="true" />
+		</effects>
+	</skill_template>
+	<skill_template skill_id="50050" name="Tahabata Gathering Cataclysm" nameId="12283524" stack="TAHABATA_GATHERING_HITKILL" lvl="1" skilltype="MAGICAL" skillsubtype="NONE" tslot="NONE" activation="ACTIVE" cooldown="0" duration="5000">
+		<properties first_target="ME" first_target_range="1" target_relation="ALL" target_type="AREA" target_maxcount="255" effective_altitude="100" effective_range="100" target_species="PC" />
+		<useconditions>
+			<move_casting allow="false" />
+		</useconditions>
+		<effects>
+			<spellatkinstant value="100000000" e="1" element="FIRE" />
+		</effects>
+	</skill_template>
 </skill_data>
