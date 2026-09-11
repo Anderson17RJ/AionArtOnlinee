@@ -76,6 +76,9 @@ public class StaticData {
 	@XmlElement(name = "skill_data")
 	public SkillData skillData;
 
+	@XmlElement(name = "skill_skins")
+	public SkillSkinData skillSkinData;
+
 	@XmlElement(name = "motion_times")
 	public MotionData motionData;
 
@@ -333,6 +336,7 @@ public class StaticData {
 		log.info("Loaded " + teleporterData.size() + " npc teleporter templates");
 		log.info("Loaded " + teleLocationData.size() + " teleport locations");
 		log.info("Loaded " + skillData.size() + " skill templates");
+		log.info("Loaded " + skillSkinData.size() + " skill skins");
 		log.info("Loaded " + skillChargeData.size() + " skill charge entries");
 		log.info("Loaded " + motionData.size() + " motion times");
 		log.info("Loaded " + skillTreeData.size() + " skill learn entries");

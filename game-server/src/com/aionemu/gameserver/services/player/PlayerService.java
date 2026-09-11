@@ -118,6 +118,7 @@ public class PlayerService {
 		player.setFriendList(FriendListDAO.load(player));
 		player.setBlockList(BlockListDAO.load(playerObjId));
 		player.setTitleList(PlayerTitleListDAO.loadTitleList(playerObjId));
+		player.setSkillSkinList(PlayerSkillSkinListDAO.loadSkillSkinList(playerObjId));
 		player.setPlayerSettings(PlayerSettingsDAO.loadSettings(playerObjId));
 		AbyssRankDAO.loadAbyssRank(player);
 		PlayerNpcFactionsDAO.loadNpcFactions(player);

@@ -29,6 +29,7 @@ public class SM_CASTSPELL_RESULT extends AionServerPacket {
 	private int dashStatus;
 	private int targetType;
 	private boolean chainSuccess;
+	private int visualSkillId;
 
 	public SM_CASTSPELL_RESULT(Skill skill, List<Effect> effects, int hitTime, boolean chainSuccess, int dashStatus) {
 		this.skill = skill;
@@ -40,11 +41,22 @@ public class SM_CASTSPELL_RESULT extends AionServerPacket {
 		this.targetType = 0;
 		this.hitTime = hitTime;
 		this.dashStatus = dashStatus;
+		this.visualSkillId = skill.getSkillTemplate().getSkillId();
+	}
+
+	public SM_CASTSPELL_RESULT(Skill skill, List<Effect> effects, int hitTime, boolean chainSuccess, int dashStatus, int visualSkillId, boolean visualSkillOverride) {
+		this(skill, effects, hitTime, chainSuccess, dashStatus);
+		this.visualSkillId = visualSkillId;
 	}
 
 	public SM_CASTSPELL_RESULT(Skill skill, List<Effect> effects, int hitTime, boolean chainSuccess, int dashStatus, int targetType) {
 		this(skill, effects, hitTime, chainSuccess, dashStatus);
 		this.targetType = targetType;
+	}
+
+	public SM_CASTSPELL_RESULT(Skill skill, List<Effect> effects, int hitTime, boolean chainSuccess, int dashStatus, int targetType, int visualSkillId) {
+		this(skill, effects, hitTime, chainSuccess, dashStatus, targetType);
+		this.visualSkillId = visualSkillId;
 	}
 
 	@Override
@@ -76,7 +88,7 @@ public class SM_CASTSPELL_RESULT extends AionServerPacket {
 				writeF(0);// unk8
 				break;
 		}
-		writeH(skill.getSkillTemplate().getSkillId());
+		writeH(visualSkillId);
 		writeC(skill.getSkillTemplate().getLvl());
 		writeD(cooldown);
 		writeH(hitTime);

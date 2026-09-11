@@ -184,6 +184,7 @@
 			<xs:element name="pack" type="PackAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="tampering" type="TamperingAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="keycombine" type="KeyCombineAction" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="skill_skin" type="SkillSkinAction" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="multireturn" type="MultiReturnAction" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -433,6 +434,14 @@
 	<xs:complexType name="KeyCombineAction">
 		<xs:complexContent>
 			<xs:extension base="AbstractItemAction"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SkillSkinAction">
+		<xs:complexContent>
+			<xs:extension base="AbstractItemAction">
+				<xs:attribute name="skin_id" type="xs:int" use="required"/>
+				<xs:attribute name="minutes" type="xs:int"/>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:simpleType name="ItemAttackType">

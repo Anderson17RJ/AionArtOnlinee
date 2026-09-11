@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill_skins>
+	<!--
+		Legacy: visual_skill_id on skill_skin applies one clone to the whole group.
+		For chains/stages, add explicit children instead. With explicit children, only the
+		listed original_skill_id values are replaced; all other stages keep their original visual.
+
+		<skill_skin id="58" name="Example multi-stage skin" skill_group="FI_FlyingSlash" motion_name="FrontDash_FlyingSlashSC_2nd" ammo_speed="0">
+			<skill original_skill_id="554" visual_skill_id="50110"/>
+			<skill original_skill_id="555" visual_skill_id="50111"/>
+			<skill original_skill_id="556" visual_skill_id="50112"/>
+		</skill_skin>
+	-->
+	<!-- GLADIATOR -->
+	<skill_skin id="1" name="Ferocious Dunk" skill_group="FI_FlyingSlash" visual_skill_id="50052" motion_name="FrontDash_FlyingSlashSC_2nd" ammo_speed="0"/>
+	<skill_skin id="2" name="Hammer Rupture" skill_group="FI_Stigma_ShockBurst" visual_skill_id="50051" motion_name="FIAreaATKSC" ammo_speed="0"/>
+	<skill_skin id="3" name="Sharp Punch" skill_group="FI_SharpnessHit" visual_skill_id="50053" motion_name="ChainATK1SC_2nd" ammo_speed="0"/>
+	<skill_skin id="4" name="Throw Hearts" skill_group="FI_WingBlade" visual_skill_id="50054" motion_name="ChainATK1SC" ammo_speed="45"/>
+	<skill_skin id="5" name="Elephant's Wave" skill_group="FI_SeismicDrain" visual_skill_id="50055" motion_name="SeismicDrainSC" ammo_speed="0"/>
+	<!-- TEMPLAR -->
+	<skill_skin id="6" name="Taunting Red Card" skill_group="KN_MassiveProvoke" visual_skill_id="50056" motion_name="PhBurst2SC_2nd" ammo_speed="0"/>
+	<skill_skin id="7" name="Cart Arrest" skill_group="KN_TripleSnacher" visual_skill_id="50057" motion_name="TripleSnacherSC_2nd" ammo_speed="0"/>
+	<skill_skin id="8" name="Chicken's Cluck" skill_group="KN_WindBlade" visual_skill_id="50058" motion_name="genocidalSwordSC" ammo_speed="0"/>
+	<skill_skin id="9" name="Tractor Beam" skill_group="KN_StunningSnacher" visual_skill_id="50059" motion_name="SnatchATK" ammo_speed="0"/>
+	<skill_skin id="10" name="Frying Pan Smash" skill_group="KN_ShieldCharge" visual_skill_id="50060" motion_name="BashATK2SC" ammo_speed="0"/>
+	<!-- RANGER -->
+	<skill_skin id="11" name="Aimed Egg" skill_group="RA_BasicShot" visual_skill_id="50061" motion_name="BasicShotSC_2nd" ammo_speed="40"/>
+	<skill_skin id="12" name="Shackling Hula Hoop" skill_group="RA_RootArrow" visual_skill_id="50062" motion_name="NormalshotSC_2nd" ammo_speed="40"/>
+	<skill_skin id="13" name="Explosive Barrel Shot" skill_group="RA_CrushShot" visual_skill_id="50063" motion_name="NormalshotSC3" ammo_speed="35"/>
+	<skill_skin id="14" name="Flanking Arrow" skill_group="RA_ParalyzeArrow" visual_skill_id="50064" motion_name="NormalshotSC" ammo_speed="25"/>
+	<skill_skin id="15" name="Cannon Shot" skill_group="RA_HeavyShot" visual_skill_id="50065" motion_name="NormalshotSC2" ammo_speed="35"/>
+	<!-- ASSASSIN -->
+	<skill_skin id="16" name="Linebacker Massacre" skill_group="AS_GenocidalSword" visual_skill_id="50066" motion_name="WindBladeSC_2nd" ammo_speed="40"/>
+	<skill_skin id="17" name="Snap Flash" skill_group="AS_BlindingBurst" visual_skill_id="50067" motion_name="phburst2SC2_2nd" ammo_speed="0"/>
+	<skill_skin id="18" name="Bear Fall" skill_group="AS_ShadowDrop" visual_skill_id="50068" motion_name="ShadowDropSC" ammo_speed="0"/>
+	<skill_skin id="19" name="Rocket Slash" skill_group="AS_DashAttack" visual_skill_id="50069" motion_name="FrontDash_rocket" ammo_speed="0"/>
+	<skill_skin id="20" name="Chicken Pox" skill_group="AS_CorruptingCut" visual_skill_id="50070" motion_name="PollutionCutSC2" ammo_speed="0"/>
+	<!-- SORCERER -->
+	<skill_skin id="21" name="Great Frog Pinata Explosion" skill_group="WI_Stigma_VolcanicFlame" visual_skill_id="50071" motion_name="Pointfire4SC_2nd" ammo_speed="0"/>
+	<skill_skin id="22" name="Paint Blast" skill_group="WI_WindSpear" visual_skill_id="50072" motion_name="hellcurseSC_2nd" ammo_speed="35"/>
+	<skill_skin id="23" name="Robot Attack" skill_group="WI_CycloneStrike" visual_skill_id="50073" motion_name="CycloneStrikeSC" ammo_speed="40"/>
+	<skill_skin id="24" name="Soul Firecracker" skill_group="WI_SoulEater" visual_skill_id="50074" motion_name="NormalfireSC2" ammo_speed="0"/>
+	<skill_skin id="25" name="Bull Cyclone" skill_group="WI_IllusionStorm" visual_skill_id="50075" motion_name="Pointfire4" ammo_speed="0"/>
+	<!-- SPITIRMASTER -->
+	<skill_skin id="26" name="Bear's Cyclical Rage" skill_group="EL_CursedBreath" visual_skill_id="50076" motion_name="CursedBreathSC_2nd" ammo_speed="30"/>
+	<skill_skin id="27" name="Soul Dart" skill_group="EL_SoulSteal" visual_skill_id="50077" motion_name="SoulStealSC_2nd" ammo_speed="30"/>
+	<skill_skin id="28" name="Enraged Manduri" skill_group="EL_Stigma_StormBlade" visual_skill_id="50078" motion_name="Normalfire" ammo_speed="0"/>
+	<skill_skin id="29" name="Drake's Pain" skill_group="EL_HellPain" visual_skill_id="50079" motion_name="Hellpain" ammo_speed="0"/>
+	<skill_skin id="30" name="Absorb Star" skill_group="EL_CountHPMPDrain" visual_skill_id="50080" motion_name="suction" ammo_speed="0"/>
+	<!-- CLERIC -->
+	<skill_skin id="31" name="Healing Cheer" skill_group="PR_HolyLightwave" visual_skill_id="50081" motion_name="HolyLightwaveSC_2nd" ammo_speed="0"/>
+	<skill_skin id="32" name="Hippo Fairy's Wrath" skill_group="PR_Purgatory" visual_skill_id="50082" motion_name="NormalfireSC_2nd" ammo_speed="0"/>
+	<skill_skin id="33" name="Charging Cat" skill_group="PR_DivineSpark" visual_skill_id="50083" motion_name="Pointfire3SC" ammo_speed="25"/>
+	<skill_skin id="34" name="Sympathetic Heart" skill_group="PR_BindingHeal" visual_skill_id="50084" motion_name="prHeal1SC" ammo_speed="0"/>
+	<skill_skin id="35" name="Power Heart" skill_group="PR_HolyExplosion" visual_skill_id="50085" motion_name="normalfireSC" ammo_speed="30"/>
+	<!-- CHANTER -->
+	<skill_skin id="36" name="Bowling Lock" skill_group="CH_MortalStrike" visual_skill_id="50086" motion_name="PowerATKSC_2nd" ammo_speed="35"/>
+	<skill_skin id="37" name="Dandi's Spell" skill_group="CH_Stigma_RecoverWord" visual_skill_id="50087" motion_name="prheal1SC_2nd" ammo_speed="0"/>
+	<skill_skin id="38" name="Bouquet Attack" skill_group="CH_TriangleShock" visual_skill_id="50088" motion_name="MultiATKSC" ammo_speed="0"/>
+	<skill_skin id="39" name="Sugar Rush" skill_group="CH_RapidThrust" visual_skill_id="50089" motion_name="WhirlDrain" ammo_speed="0"/>
+	<skill_skin id="40" name="Pillow Fight" skill_group="CH_TripleThrust" visual_skill_id="50090" motion_name="PollutionCutSC" ammo_speed="0"/>
+	<!-- GUNNER -->
+	<skill_skin id="41" name="Fiery Throw of Silence" skill_group="Gu_SilenceShot" visual_skill_id="50091" motion_name="PointFire1SC_2nd" ammo_speed="40"/>
+	<skill_skin id="42" name="Coin Blast" skill_group="Gu_FireCannon" visual_skill_id="50092" motion_name="Chargeshot1SC_2nd" ammo_speed="40"/>
+	<skill_skin id="43" name="Slingshot Aim" skill_group="Gu_SunningShot" visual_skill_id="50093" motion_name="FocusShot3SC" ammo_speed="30"/>
+	<skill_skin id="44" name="Gun Salute" skill_group="Gu_SoulBreakCannon" visual_skill_id="50094" motion_name="Chargeshot3SC" ammo_speed="40"/>
+	<skill_skin id="45" name="Donut Cannon" skill_group="Gu_BindingCannon" visual_skill_id="50095" motion_name="Chargeshot1SC" ammo_speed="40"/>
+	<!-- AT -->
+	<skill_skin id="46" name="Jump Rope Blow" skill_group="RI_ExplodingPunch" visual_skill_id="50096" motion_name="FlamePunchSC_2nd" ammo_speed="0"/>
+	<skill_skin id="47" name="Punch Ball Strikes" skill_group="RI_RapidAttack" visual_skill_id="50097" motion_name="RapidPunch1SC_2nd" ammo_speed="0"/>
+	<skill_skin id="48" name="Idium Hammer" skill_group="RI_ChargedPunch" visual_skill_id="50098" motion_name="ChargeDrillSC" ammo_speed="0"/>
+	<skill_skin id="49" name="Fist Fire" skill_group="RI_DirectFire" visual_skill_id="50099" motion_name="ChainFireR1SC" ammo_speed="50"/>
+	<skill_skin id="50" name="Whale Crush" skill_group="RI_PowerSlam" visual_skill_id="50100" motion_name="FuryATKSC" ammo_speed="0"/>
+	<!-- BARD -->
+	<skill_skin id="51" name="Snowflower Axel" skill_group="Ba_Sanctuary" visual_skill_id="50101" motion_name="Defensebuff01SC_2nd" ammo_speed="0"/>
+	<skill_skin id="52" name="Baby Weight" skill_group="Ba_SongofGale" visual_skill_id="50102" motion_name="SongSlow01SC_2nd" ammo_speed="0"/>
+	<skill_skin id="53" name="Guitar Rhapsody" skill_group="Ba_SongofPain" visual_skill_id="50103" motion_name="SoulShock01SC" ammo_speed="40"/>
+	<skill_skin id="54" name="Chicklet Variation" skill_group="Ba_IllusionRequiem" visual_skill_id="50104" motion_name="songbattle02" ammo_speed="0"/>
+	<skill_skin id="55" name="Rainbow Variation" skill_group="Ba_Requiem" visual_skill_id="50105" motion_name="SongPowerShock01SC" ammo_speed="30"/>
+
+
+	<skill_skin id="56" name="Healing Cheer" skill_group="PR_HolyLightwave" visual_skill_id="50106" motion_name="HolyLightwaveSC_2nd" ammo_speed="0"/>
+	<skill_skin id="57" name="Healing Cheer" skill_group="PR_HolyLightwave" visual_skill_id="50107" motion_name="HolyLightwaveSC_2nd" ammo_speed="0"/>
+
+</skill_skins>

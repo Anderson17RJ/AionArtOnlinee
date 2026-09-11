@@ -356,6 +356,7 @@ public final class PlayerEnterWorldService {
 		expirables.addAll(player.getMotions().getMotions().values());
 		expirables.addAll(player.getEmotions().getEmotions());
 		expirables.addAll(player.getTitleList().getTitles());
+		expirables.addAll(player.getSkillSkinList().getSkins());
 		ExpireTimerTask.getInstance().registerExpirables(expirables, player);
 
 		if (player.getActiveHouse() != null) {

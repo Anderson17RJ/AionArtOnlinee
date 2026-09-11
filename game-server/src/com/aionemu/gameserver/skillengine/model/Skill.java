@@ -480,7 +480,7 @@ public class Skill {
 			switch (targetType) {
 				case 0: // PlayerObjectId as Target
 					PacketSendUtility.broadcastPacketAndReceive(effector,
-						new SM_CASTSPELL(effector, skillTemplate.getSkillId(), skillLevel, targetType, targetObjId, castDuration,
+						new SM_CASTSPELL(effector, getVisualSkillId(), skillLevel, targetType, targetObjId, castDuration,
 							castSpeedForAnimationBoostAndChargeSkills, allowAnimationBoostByCastSpeed()));
 					if (effector instanceof Npc) {
 						ShoutEventHandler.onCast((NpcAI) effector.getAi(), firstTarget);
@@ -489,13 +489,13 @@ public class Skill {
 
 				case 3: // Target not in sight?
 					PacketSendUtility.broadcastPacketAndReceive(effector,
-						new SM_CASTSPELL(effector, skillTemplate.getSkillId(), skillLevel, targetType, targetObjId, castDuration,
+						new SM_CASTSPELL(effector, getVisualSkillId(), skillLevel, targetType, targetObjId, castDuration,
 							castSpeedForAnimationBoostAndChargeSkills, allowAnimationBoostByCastSpeed()));
 					break;
 
 				case 1: // XYZ as Target
 					PacketSendUtility.broadcastPacketAndReceive(effector,
-						new SM_CASTSPELL(effector, skillTemplate.getSkillId(), skillLevel, targetType, x, y, z, castDuration,
+						new SM_CASTSPELL(effector, getVisualSkillId(), skillLevel, targetType, x, y, z, castDuration,
 							castSpeedForAnimationBoostAndChargeSkills, allowAnimationBoostByCastSpeed()));
 					break;
 			}
@@ -722,12 +722,12 @@ public class Skill {
 			switch (targetType) {
 				case 0: // PlayerObjectId as Target
 				case 3: // Target not in sight?
-					PacketSendUtility.broadcastPacketAndReceive(effector, new SM_CASTSPELL_RESULT(this, effects, hitTime, chainSuccess, dashStatus), et);
+					PacketSendUtility.broadcastPacketAndReceive(effector, new SM_CASTSPELL_RESULT(this, effects, hitTime, chainSuccess, dashStatus, getVisualSkillId(), true), et);
 					sentCastSpellPacket = true;
 					break;
 				case 1: // XYZ as Target
 					PacketSendUtility.broadcastPacketAndReceive(effector,
-						new SM_CASTSPELL_RESULT(this, effects, hitTime, chainSuccess, dashStatus, targetType), et);
+						new SM_CASTSPELL_RESULT(this, effects, hitTime, chainSuccess, dashStatus, targetType, getVisualSkillId()), et);
 					sentCastSpellPacket = true;
 					break;
 			}
@@ -995,6 +995,12 @@ public class Skill {
 		return this.getSkillTemplate().getProperties().getFirstTarget() == FirstTargetAttribute.POINT
 			&& this.getSkillTemplate().getProperties().getTargetType() == TargetRangeAttribute.POINT;
 
+	}
+
+	private int getVisualSkillId() {
+		if (effector instanceof Player player)
+			return player.getSkillSkinList().getVisualSkillId(skillTemplate.getSkillId());
+		return skillTemplate.getSkillId();
 	}
 
 	public int getMultiCastCount() {

@@ -76,6 +76,7 @@
 	<xs:include schemaLocation="skills/motion_times.xsd" />
 	<xs:include schemaLocation="skills/skill_charge.xsd" />
 	<xs:include schemaLocation="skills/skills.xsd" />
+	<xs:include schemaLocation="skill_skins.xsd" />
 	<xs:include schemaLocation="spawns/spawns.xsd" />
 	<xs:include schemaLocation="staticdoors/staticdoor_templates.xsd" />
 	<xs:include schemaLocation="stats/absolute_stats.xsd" />
@@ -174,6 +175,7 @@
 					<xs:element ref="siege_locations" minOccurs="0" />
 					<xs:element ref="skill_charge" minOccurs="0" />
 					<xs:element ref="skill_data" minOccurs="0" />
+					<xs:element ref="skill_skins" minOccurs="0" />
 					<xs:element ref="skill_tree" minOccurs="0" />
 					<xs:element ref="spawns" minOccurs="0" />
 					<xs:element ref="staticdoor_templates" minOccurs="0" />

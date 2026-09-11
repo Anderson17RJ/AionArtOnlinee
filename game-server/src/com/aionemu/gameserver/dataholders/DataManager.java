@@ -95,6 +95,7 @@ public final class DataManager {
 	public static SiegeLocationData SIEGE_LOCATION_DATA;
 	public static SkillChargeData SKILL_CHARGE_DATA;
 	public static SkillData SKILL_DATA;
+	public static SkillSkinData SKILL_SKIN_DATA;
 	public static SkillTreeData SKILL_TREE_DATA;
 	public static SpawnsData SPAWNS_DATA;
 	public static StaticDoorData STATICDOOR_DATA;
@@ -144,6 +145,7 @@ public final class DataManager {
 		GATHERABLE_DATA = data.gatherableData;
 		PLAYER_INITIAL_DATA = data.playerInitialData;
 		SKILL_DATA = data.skillData;
+		SKILL_SKIN_DATA = data.skillSkinData;
 		SKILL_CHARGE_DATA = data.skillChargeData;
 		MOTION_DATA = data.motionData;
 		SKILL_TREE_DATA = data.skillTreeData;

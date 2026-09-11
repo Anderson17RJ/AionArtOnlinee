@@ -34,6 +34,7 @@ import com.aionemu.gameserver.model.gameobjects.player.emotion.EmotionList;
 import com.aionemu.gameserver.model.gameobjects.player.motion.MotionList;
 import com.aionemu.gameserver.model.gameobjects.player.npcFaction.NpcFactions;
 import com.aionemu.gameserver.model.gameobjects.player.title.TitleList;
+import com.aionemu.gameserver.model.gameobjects.player.skill.SkillSkinList;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureVisualState;
 import com.aionemu.gameserver.model.gameobjects.state.FlyState;
@@ -97,6 +98,7 @@ public class Player extends Creature {
 	private Mailbox mailbox;
 	private PrivateStore store;
 	private TitleList titleList;
+	private SkillSkinList skillSkinList;
 	private QuestStateList questStateList;
 	private RecipeList recipeList;
 	private List<House> houses;
@@ -198,6 +200,8 @@ public class Player extends Creature {
 		this.requester = new ResponseRequester(this);
 		this.questStateList = new QuestStateList();
 		this.titleList = new TitleList();
+		this.skillSkinList = new SkillSkinList();
+		this.skillSkinList.setOwner(this);
 		this.equipment = new Equipment(this);
 		this.inventory = new PlayerStorage(this, StorageType.CUBE);
 		this.regularWarehouse = new PlayerStorage(this, StorageType.REGULAR_WAREHOUSE);
@@ -603,6 +607,15 @@ public class Player extends Creature {
 	public void setTitleList(TitleList titleList) {
 		this.titleList = titleList;
 		titleList.setOwner(this);
+	}
+
+	public SkillSkinList getSkillSkinList() {
+		return skillSkinList;
+	}
+
+	public void setSkillSkinList(SkillSkinList skillSkinList) {
+		this.skillSkinList = skillSkinList;
+		skillSkinList.setOwner(this);
 	}
 
 	public PlayerGroup getPlayerGroup() {

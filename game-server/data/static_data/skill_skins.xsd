@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="skill_skins">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="skill_skin" type="skillSkinTemplate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="skillSkinTemplate">
+		<xs:sequence minOccurs="0" maxOccurs="1">
+			<xs:element name="skill" type="skillSkinVisualTemplate" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="skill_group" type="xs:string" use="required"/>
+		<xs:attribute name="visual_skill_id" type="xs:int"/>
+		<xs:attribute name="motion_name" type="xs:string" use="required"/>
+		<xs:attribute name="ammo_speed" type="xs:int" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="skillSkinVisualTemplate">
+		<xs:attribute name="original_skill_id" type="xs:int" use="required"/>
+		<xs:attribute name="visual_skill_id" type="xs:int" use="required"/>
+	</xs:complexType>
+</xs:schema>
