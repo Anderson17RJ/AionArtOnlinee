@@ -25,6 +25,7 @@ import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
 import com.aionemu.gameserver.utils.PositionUtil;
 import com.aionemu.gameserver.world.WorldMapType;
 import com.aionemu.gameserver.world.WorldPosition;
+import com.aionemu.gameserver.world.geo.navmesh.NavMeshService;
 
 /**
  * @author ATracer
@@ -38,6 +39,8 @@ public class GeoService implements GameEngine {
 		DataManager.WORLD_MAPS_DATA.forEach(map -> geoMaps.put(map.getMapId(), new GeoMap(map.getMapId())));
 		if (GeoDataConfig.GEO_ENABLE) {
 			GeoWorldLoader.load(geoMaps.values());
+			if (GeoDataConfig.GEO_NPC_NAVMESH_ENABLE)
+				NavMeshService.getInstance().init();
 		} else {
 			LoggerFactory.getLogger(GeoService.class).warn("Geo data is disabled");
 		}

@@ -7,6 +7,7 @@ import com.aionemu.gameserver.ai.manager.SimpleAttackManager;
 import com.aionemu.gameserver.ai.manager.WalkManager;
 import com.aionemu.gameserver.ai.poll.AIQuestion;
 import com.aionemu.gameserver.configs.main.AIConfig;
+import com.aionemu.gameserver.configs.main.GeoDataConfig;
 import com.aionemu.gameserver.configs.main.SiegeConfig;
 import com.aionemu.gameserver.controllers.attack.AggroList;
 import com.aionemu.gameserver.controllers.effect.EffectController;
@@ -25,6 +26,8 @@ import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.services.SiegeService;
 import com.aionemu.gameserver.utils.PositionUtil;
 import com.aionemu.gameserver.world.WorldType;
+import com.aionemu.gameserver.world.geo.GeoService;
+import com.aionemu.gameserver.world.geo.navmesh.NavMeshService;
 import com.aionemu.gameserver.world.knownlist.KnownList;
 
 /**
@@ -164,15 +167,21 @@ public abstract class NpcAI extends AITemplate<Npc> {
 		return switch (getState()) {
 			case CONFUSE, FEAR -> PositionUtil.isInRange(getOwner(), getOwner().getMoveController().getTargetX2(),
 				getOwner().getMoveController().getTargetY2(), getOwner().getMoveController().getTargetZ2(), 1);
-			case FIGHT -> SimpleAttackManager.isTargetInAttackRange(getOwner());
+			case FIGHT -> SimpleAttackManager.isTargetInAttackRange(getOwner()) && hasReachedPathfindingTarget();
 			case RETURNING -> {
 				SpawnTemplate spawn = getOwner().getSpawn();
 				yield PositionUtil.isInRange(getOwner(), spawn.getX(), spawn.getY(), spawn.getZ(), 1);
 			}
-			case FOLLOWING -> FollowEventHandler.isInRange(this, getOwner().getTarget());
+			case FOLLOWING -> FollowEventHandler.isInRange(this, getOwner().getTarget()) && hasReachedPathfindingTarget();
 			case WALKING, FORCED_WALKING -> getSubState() == AISubState.TALK || WalkManager.isArrivedAtPoint(this);
 			default -> true;
 		};
+	}
+
+	private boolean hasReachedPathfindingTarget() {
+		return !GeoDataConfig.GEO_ENABLE || !GeoDataConfig.GEO_NPC_MOVE || !GeoDataConfig.GEO_NPC_NAVMESH_ENABLE
+			|| !NavMeshService.getInstance().hasNavMesh(getOwner().getWorldId())
+			|| GeoService.getInstance().canSee(getOwner(), getOwner().getTarget());
 	}
 
 	@Override

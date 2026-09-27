@@ -72,13 +72,13 @@ public class SimpleAttackManager {
 			npcAI.onGeneralEvent(AIEventType.TARGET_TOOFAR);
 		} else if (!isTargetInAttackRange(npc)) {
 			npcAI.onGeneralEvent(AIEventType.TARGET_TOOFAR);
-		} else if (!GeoService.getInstance().canSee(npc, target)) { // delete geo check when we've implemented a pathfinding system
+		} else if (!GeoService.getInstance().canSee(npc, target)) {
 			npc.getController().cancelCurrentSkill(null);
 			if (((System.currentTimeMillis() - npc.getMoveController().getLastMoveUpdate()) > 15000)
 				&& npc.getGameStats().getLastAttackedTimeDelta() > 15) {
 				npcAI.onGeneralEvent(AIEventType.TARGET_GIVEUP);
 			} else {
-				npcAI.onGeneralEvent(AIEventType.ATTACK_COMPLETE);
+				npcAI.onGeneralEvent(AIEventType.TARGET_TOOFAR);
 			}
 		} else {
 			if (npc.isSpawned() && !npc.isDead() && !npc.getLifeStats().isAboutToDie() && npc.canAttack()) {

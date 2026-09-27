@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.controllers.movement;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.aionemu.gameserver.ai.manager.WalkManager;
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.geoEngine.collision.IgnoreProperties;
+import com.aionemu.gameserver.geoEngine.math.Vector3f;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
@@ -33,6 +36,8 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.PositionUtil;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.geo.GeoService;
+import com.aionemu.gameserver.world.geo.navmesh.Al40NavMesh.PathResult;
+import com.aionemu.gameserver.world.geo.navmesh.NavMeshService;
 
 /**
  * @author ATracer
@@ -42,6 +47,8 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 	private static final Logger log = LoggerFactory.getLogger(NpcMoveController.class);
 	private static final float MOVE_OFFSET = 0.05f;
 	private static final int MAX_GEO_POINT_DISTANCE = 5;
+	private static final float PATH_WAYPOINT_REACHED_DISTANCE = 0.85f;
+	private static final float PATH_WAYPOINT_REACHED_HEIGHT = 1.5f;
 
 	private Destination destination = Destination.TARGET_OBJECT;
 
@@ -50,6 +57,12 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 	private float pointZ;
 	private boolean nextPointFromGeo;
 	private boolean isStop;
+	private final Deque<Vector3f> navigationPath = new ArrayDeque<>();
+	private float navigationTargetX = Float.NaN;
+	private float navigationTargetY = Float.NaN;
+	private float navigationTargetZ = Float.NaN;
+	private long nextPathRebuild;
+	private long navigationPathCreated;
 
 	private LinkedList<Point3D> lastSteps;
 
@@ -75,6 +88,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 				AILogger.moveinfo(owner, "MC: moveToTarget started");
 			}
 			destination = Destination.TARGET_OBJECT;
+			clearNavigationPath();
 			updateLastMove();
 			owner.getController().onStartMove();
 		}
@@ -89,6 +103,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 			pointX = x;
 			pointY = y;
 			pointZ = z;
+			clearNavigationPath();
 			updateLastMove();
 			owner.getController().onStartMove();
 		}
@@ -103,6 +118,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 			pointX = x;
 			pointY = y;
 			pointZ = z;
+			clearNavigationPath();
 			updateLastMove();
 			owner.getController().onStartMove();
 		}
@@ -148,6 +164,18 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 				VisibleObject target = owner.getTarget();// todo no target
 				if (target == null)
 					return;
+				if (GeoDataConfig.GEO_ENABLE && GeoDataConfig.GEO_NPC_MOVE && GeoDataConfig.GEO_NPC_NAVMESH_ENABLE
+					&& NavMeshService.getInstance().hasNavMesh(owner.getWorldId()) && !owner.isInFlyingState()
+					&& target instanceof Creature creature && isOnGround(creature)) {
+					pointX = target.getX();
+					pointY = target.getY();
+					pointZ = target.getZ();
+					Vector3f waypoint = getNavigationWaypoint(pointX, pointY, pointZ);
+					moveToLocation(waypoint.x, waypoint.y, waypoint.z);
+					break;
+				} else {
+					clearNavigationPath();
+				}
 				if (!PositionUtil.isInRange(target, pointX, pointY, pointZ, MOVE_CHECK_OFFSET)) {
 					if (GeoDataConfig.GEO_NPC_MOVE && !owner.isInFlyingState() && target instanceof Creature creature && (nextPointFromGeo || (nextPointFromGeo = !isOnGround(creature)))) {
 						if (trySetValidGeoPoint(target.getX(), target.getY()) && nextPointFromGeo)
@@ -166,6 +194,56 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 				break;
 		}
 		updateLastMove();
+	}
+
+	/**
+	 * Follow the selected navmesh route directly. A missing route stops the NPC until the next re-path instead of
+	 * falling back to movement straight toward the target.
+	 */
+	private Vector3f getNavigationWaypoint(float targetX, float targetY, float targetZ) {
+		long now = System.currentTimeMillis();
+		boolean targetMoved = Float.isNaN(navigationTargetX)
+			|| PositionUtil.getDistance(navigationTargetX, navigationTargetY, targetX, targetY) >= 2f
+			|| Math.abs(navigationTargetZ - targetZ) >= 1.5f;
+		boolean expired = navigationPathCreated > 0 && now - navigationPathCreated >= 5000;
+		if (nextPathRebuild == 0 || now >= nextPathRebuild && (navigationPath.isEmpty() || targetMoved || expired)) {
+			PathResult result = NavMeshService.getInstance().findPath(owner.getWorldId(),
+				new Vector3f(owner.getX(), owner.getY(), owner.getZ()), new Vector3f(targetX, targetY, targetZ),
+				Math.max(32, GeoDataConfig.GEO_NPC_NAVMESH_MAX_VISITED_NODES));
+			navigationPath.clear();
+			if (result.complete())
+				navigationPath.addAll(result.points());
+			navigationTargetX = targetX;
+			navigationTargetY = targetY;
+			navigationTargetZ = targetZ;
+			navigationPathCreated = now;
+			nextPathRebuild = now + Math.max(250, GeoDataConfig.GEO_NPC_NAVMESH_REPATH_INTERVAL);
+			if (GeoDataConfig.GEO_NPC_NAVMESH_DEBUG)
+				log.info("AL40 NPC {} world {} from ({}, {}, {}) to ({}, {}, {}): complete={} visited={} route={}",
+					owner.getObjectId(), owner.getWorldId(), owner.getX(), owner.getY(), owner.getZ(), targetX, targetY, targetZ,
+					result.complete(), result.visitedNodes(), result.points());
+			if (owner.getAi().isLogging())
+				AILogger.moveinfo(owner, "AL40 path: points=" + result.points().size() + " complete=" + result.complete()
+					+ " visited=" + result.visitedNodes() + (result.points().isEmpty() ? "" : " first=" + result.points().getFirst()));
+		}
+		if (!navigationPath.isEmpty()) {
+			Vector3f waypoint = navigationPath.peekFirst();
+			if (PositionUtil.getDistance(owner.getX(), owner.getY(), waypoint.x, waypoint.y) <= PATH_WAYPOINT_REACHED_DISTANCE
+				&& Math.abs(owner.getZ() - waypoint.z) <= PATH_WAYPOINT_REACHED_HEIGHT)
+				navigationPath.removeFirst();
+			if (!navigationPath.isEmpty())
+				return navigationPath.peekFirst();
+		}
+		return new Vector3f(owner.getX(), owner.getY(), owner.getZ());
+	}
+
+	private void clearNavigationPath() {
+		navigationPath.clear();
+		navigationTargetX = Float.NaN;
+		navigationTargetY = Float.NaN;
+		navigationTargetZ = Float.NaN;
+		nextPathRebuild = 0;
+		navigationPathCreated = 0;
 	}
 
 	private boolean isOnGround(Creature creature) {
@@ -345,6 +423,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 		pointY = 0;
 		pointZ = 0;
 		nextPointFromGeo = false;
+		clearNavigationPath();
 	}
 
 	public WalkerTemplate getWalkerTemplate() {
@@ -357,6 +436,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 	}
 
 	public void setRouteStep(RouteStep step) {
+		clearNavigationPath();
 		Point2D dest = null;
 		if (owner.getWalkerGroup() != null) {
 			dest = WalkerGroup.getLinePoint(new Point2D(currentStep.getX(), currentStep.getY()), new Point2D(step.getX(), step.getY()),
