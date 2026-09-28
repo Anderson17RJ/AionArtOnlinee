@@ -25,6 +25,7 @@ import com.aionemu.gameserver.services.ShieldService;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.aionemu.gameserver.utils.collections.CollectionUtil;
 import com.aionemu.gameserver.world.container.PlayerContainer;
+import com.aionemu.gameserver.world.geo.navmesh.NavMeshService;
 import com.aionemu.gameserver.world.exceptions.AlreadySpawnedException;
 import com.aionemu.gameserver.world.exceptions.DuplicateAionObjectException;
 
@@ -295,6 +296,8 @@ public class World {
 		object.getController().onAfterSpawn();
 
 		object.updateKnownlist();
+		if (object instanceof Player player)
+			NavMeshService.getInstance().onPlayerEnterMap(player.getWorldId());
 	}
 
 	/**
@@ -315,6 +318,8 @@ public class World {
 			object.getController().onDespawn();
 		} finally {
 			MapRegion oldMapRegion = position.getMapRegion();
+			if (object instanceof Player player)
+				NavMeshService.getInstance().onPlayerLeaveMap(player.getWorldId());
 			position.setIsSpawned(false);
 			if (oldMapRegion != null) { // can be null if an instance gets deleted?
 				oldMapRegion.getParent().removeObject(object);
