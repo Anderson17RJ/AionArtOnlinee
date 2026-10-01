@@ -11,6 +11,7 @@ import com.aionemu.gameserver.ai.manager.EmoteManager;
 import com.aionemu.gameserver.ai.manager.WalkManager;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.skill.NpcSkillEntry;
+import com.aionemu.gameserver.services.DpsCountService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.skillengine.model.DispelSlotType;
 
@@ -48,6 +49,7 @@ public class ReturningEventHandler {
 		if (npcAI.isLogging()) {
 			AILogger.info(npcAI, "onBackHome");
 		}
+		DpsCountService.getInstance().clearEncounter(npcAI.getOwner());
 		npcAI.getOwner().getMoveController().clearBackSteps();
 		if (npcAI.setStateIfNot(AIState.IDLE)) {
 			npcAI.setSubStateIfNot(AISubState.NONE);

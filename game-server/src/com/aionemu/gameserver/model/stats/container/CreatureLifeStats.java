@@ -8,6 +8,7 @@ import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
 import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
 import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
 import com.aionemu.gameserver.services.LifeStatsRestoreService;
+import com.aionemu.gameserver.services.DpsCountService;
 import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -103,6 +104,8 @@ public abstract class CreatureLifeStats<T extends Creature> {
 
 		if (newHp != previousHp || skillId != 0)
 			sendAttackStatusPacketUpdate(type, previousHp - newHp, skillId, log);
+		if (newHp != previousHp)
+			DpsCountService.getInstance().onDamage(getOwner(), attacker, previousHp - newHp, newHp == 0);
 		if (newHp != previousHp)
 			onHpChanged(previousHp, newHp, attacker);
 		return newHp;

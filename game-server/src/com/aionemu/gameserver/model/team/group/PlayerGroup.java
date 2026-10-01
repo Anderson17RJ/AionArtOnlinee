@@ -10,6 +10,7 @@ import com.aionemu.gameserver.utils.idfactory.IDFactory;
 public class PlayerGroup extends TemporaryPlayerTeam<PlayerGroupMember> {
 
 	private final PlayerGroupStats playerGroupStats;
+	private volatile boolean dpsCountEnabled = true;
 	private TeamType type;
 
 	public PlayerGroup(PlayerGroupMember leader, TeamType type, int id) {
@@ -49,5 +50,13 @@ public class PlayerGroup extends TemporaryPlayerTeam<PlayerGroupMember> {
 
 	public TeamType getTeamType() {
 		return type;
+	}
+
+	public boolean isDpsCountEnabled() {
+		return dpsCountEnabled;
+	}
+
+	public void setDpsCountEnabled(boolean dpsCountEnabled) {
+		this.dpsCountEnabled = dpsCountEnabled;
 	}
 }

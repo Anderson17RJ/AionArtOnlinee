@@ -31,6 +31,7 @@ import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.DialogService;
+import com.aionemu.gameserver.services.DpsCountService;
 import com.aionemu.gameserver.services.RespawnService;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
 import com.aionemu.gameserver.services.drop.DropRegistrationService;
@@ -122,6 +123,7 @@ public class NpcController extends CreatureController<Npc> {
 	@Override
 	public void onDespawn() {
 		Npc owner = getOwner();
+		DpsCountService.getInstance().clearEncounter(owner);
 		cancelCurrentSkill(null);
 		owner.getEffectController().removeAllEffects();
 		if (owner.getSpawn().hasPool() && !owner.isDead())

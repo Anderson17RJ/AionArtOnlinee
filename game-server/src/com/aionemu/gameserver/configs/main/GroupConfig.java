@@ -5,6 +5,12 @@ import com.aionemu.commons.configuration.Property;
 public class GroupConfig {
 
 	/**
+	 * Enables the DPS counter for dungeon bosses. Individual groups can still disable it through .dps off.
+	 */
+	@Property(key = "gameserver.dpscount.enabled", defaultValue = "true")
+	public static boolean DPS_COUNT_ENABLED;
+
+	/**
 	 * Group remove time
 	 */
 	@Property(key = "gameserver.playergroup.removetime", defaultValue = "600")
