@@ -20,7 +20,6 @@ public final class Al40NavMesh {
 		{ 0, -1 }, { -1, -1 }, { -1, 0 }, { -1, 1 }
 	};
 	private static final float SQRT_2 = 1.41421356f;
-
 	private final int worldId;
 	private final List<Subgraph> subgraphs;
 	private final long floorCount;
@@ -49,18 +48,23 @@ public final class Al40NavMesh {
 		if (starts.isEmpty() || goals.isEmpty())
 			return PathResult.empty(0);
 
-		int visited = 0;
+		List<FloorPair> candidates = new ArrayList<>();
 		for (LocatedFloor startFloor : starts) {
 			for (LocatedFloor goalFloor : goals) {
-				if (startFloor.subgraphIndex != goalFloor.subgraphIndex)
-					continue;
-				PathResult result = findPath(startFloor, goalFloor, goal, Math.max(1, maxVisitedNodes - visited));
-				visited += result.visitedNodes;
-				if (result.complete)
-					return new PathResult(result.points, true, visited);
-				if (visited >= maxVisitedNodes)
-					return PathResult.empty(visited);
+				if (startFloor.subgraphIndex == goalFloor.subgraphIndex)
+					candidates.add(new FloorPair(startFloor, goalFloor));
 			}
+		}
+		candidates.sort(Comparator.comparingDouble(pair -> pair.verticalError(start.z, goal.z)));
+
+		int visited = 0;
+		for (FloorPair candidate : candidates) {
+			PathResult result = findPath(candidate.start, candidate.goal, goal, Math.max(1, maxVisitedNodes - visited));
+			visited += result.visitedNodes;
+			if (result.complete)
+				return new PathResult(result.points, true, visited);
+			if (visited >= maxVisitedNodes)
+				return PathResult.empty(visited);
 		}
 		return PathResult.empty(visited);
 	}
@@ -297,6 +301,12 @@ public final class Al40NavMesh {
 	}
 
 	private record LocatedFloor(int subgraphIndex, Floor floor) {
+	}
+
+	private record FloorPair(LocatedFloor start, LocatedFloor goal) {
+		float verticalError(float startZ, float goalZ) {
+			return Math.abs(startZ - start.floor.z) + Math.abs(goalZ - goal.floor.z);
+		}
 	}
 
 	private record Floor(int blockIndex, int encodedZ, int flags, float z) {
