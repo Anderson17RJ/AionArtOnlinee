@@ -911,7 +911,7 @@ public class QuestEngine implements GameEngine {
 	private void addMessageSendingTask() {
 		messageTask = CronService.getInstance().schedule(() -> {
 			World.getInstance().forEachPlayer(player -> {
-				boolean daily = false, weekly = false;
+				boolean daily = false, weekly = false, monthly = false;
 				for (QuestState qs : player.getQuestStateList().getCompletedQuests()) {
 					if (qs.isStartable()) {
 						QuestTemplate template = DataManager.QUEST_DATA.getQuestById(qs.getQuestId());
@@ -919,7 +919,9 @@ public class QuestEngine implements GameEngine {
 							daily = true;
 						else if (!weekly && template.isWeekly())
 							weekly = true;
-						if (daily && weekly)
+						else if (!monthly && template.isMonthly())
+							monthly = true;
+						if (daily && weekly && monthly)
 							break;
 					}
 				}
@@ -927,7 +929,7 @@ public class QuestEngine implements GameEngine {
 					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_QUEST_LIMIT_RESET_DAILY());
 				if (weekly)
 					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_QUEST_LIMIT_RESET_WEEK());
-				if (daily || weekly)
+				if (daily || weekly || monthly)
 					player.getController().updateNearbyQuests();
 				player.getNpcFactions().sendDailyQuest();
 			});

@@ -82483,4 +82483,9 @@
 		<rewards/>
 		<bonus level="5" type="MEDAL"/>
 	</quest>
+	<quest id="99003" name="[Monthly] Extendable Mythic" nameId="1801364" quest_zone="Sanctum" minlevel_permitted="65" max_repeat_count="255" cannot_share="true" race_permitted="PC_ALL" category="QUEST" repeat_cycle="MONTHLY">
+		<rewards gold="1000000" exp="1000000">
+			<reward_item item_id="186000031" count="10"/>
+		</rewards>
+	</quest>
 </quests>

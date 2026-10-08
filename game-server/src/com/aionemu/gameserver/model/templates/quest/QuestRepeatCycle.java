@@ -18,7 +18,8 @@ public enum QuestRepeatCycle implements L10n {
 	THU(4, 900334),
 	FRI(5, 900335),
 	SAT(6, 900336),
-	SUN(7, 900330);
+	SUN(7, 900330),
+	MONTHLY(8, 0);
 
 	private int weekDay;
 	private int nameId;

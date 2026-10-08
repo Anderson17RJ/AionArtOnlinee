@@ -248,6 +248,12 @@ public final class QuestService {
 		ZonedDateTime repeatDate = now.with(LocalTime.of(9, 0));
 		if (now.isAfter(repeatDate))
 			repeatDate = repeatDate.plusDays(1);
+		if (template.isMonthly()) {
+			ZonedDateTime monthlyRepeatDate = now.withDayOfMonth(1).with(LocalTime.of(9, 0));
+			if (!now.isBefore(monthlyRepeatDate))
+				monthlyRepeatDate = monthlyRepeatDate.plusMonths(1);
+			return new Timestamp(monthlyRepeatDate.toEpochSecond() * 1000);
+		}
 		if (template.isDaily()) {
 			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_QUEST_LIMIT_START_DAILY(9));
 		} else {

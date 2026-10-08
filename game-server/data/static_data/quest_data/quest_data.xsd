@@ -207,6 +207,7 @@
 			<xs:enumeration value="FRI"/>
 			<xs:enumeration value="SAT"/>
 			<xs:enumeration value="SUN"/>
+			<xs:enumeration value="MONTHLY"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

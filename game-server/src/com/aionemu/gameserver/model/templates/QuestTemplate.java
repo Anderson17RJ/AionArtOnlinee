@@ -347,7 +347,7 @@ public class QuestTemplate implements L10n {
 	}
 
 	public boolean isWeekly() {
-		return isTimeBased() && !isDaily();
+		return isTimeBased() && !isDaily() && !isMonthly();
 	}
 
 	public boolean isMaster() {
@@ -360,6 +360,10 @@ public class QuestTemplate implements L10n {
 
 	public boolean isProfession() {
 		return isMaster() || isExpert();
+	}
+	
+	public boolean isMonthly() {
+		return isTimeBased() && repeatCycle.contains(QuestRepeatCycle.MONTHLY);
 	}
 
 	/**
