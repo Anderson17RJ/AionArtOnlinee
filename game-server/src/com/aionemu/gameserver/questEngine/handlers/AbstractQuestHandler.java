@@ -209,6 +209,14 @@ public abstract class AbstractQuestHandler {
 		return false;
 	}
 
+	/**
+	 * Called for a registered PvE NPC kill in a world/map. The killed NPC is available through
+	 * {@link QuestEnv#getVisibleObject()} and the credited player through {@link QuestEnv#getPlayer()}.
+	 */
+	public boolean onKillNpcInWorldEvent(QuestEnv env) {
+		return false;
+	}
+
 	public boolean onKillInZoneEvent(QuestEnv env) {
 		return false;
 	}

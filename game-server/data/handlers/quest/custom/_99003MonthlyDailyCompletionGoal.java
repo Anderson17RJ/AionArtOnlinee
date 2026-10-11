@@ -16,9 +16,9 @@ import com.aionemu.gameserver.questEngine.model.QuestStatus;
 public class _99003MonthlyDailyCompletionGoal extends AbstractQuestHandler {
 
 	private static final int QUEST_ID = 99003;
-	private static final int START_AND_REWARD_NPC_ID = 203739; // TODO: replace with the Sanctum NPC ID
-	private static final int DAILY_QUEST_ID = 0; // Disabled temporarily for the client-dialog test.
-	private static final int REQUIRED_DAILY_COMPLETIONS = 3; // TODO: replace with the required monthly total
+	private static final int[] START_NPC_IDS = {882333, 882334};
+	private static final int DAILY_QUEST_ID = 99004; // Disabled temporarily for the client-dialog test.
+	private static final int REQUIRED_DAILY_COMPLETIONS = 20; // TODO: replace with the required monthly total
 
 	public _99003MonthlyDailyCompletionGoal() {
 		super(QUEST_ID);
@@ -26,16 +26,27 @@ public class _99003MonthlyDailyCompletionGoal extends AbstractQuestHandler {
 
 	@Override
 	public void register() {
-		qe.registerQuestNpc(START_AND_REWARD_NPC_ID).addOnQuestStart(questId);
-		qe.registerQuestNpc(START_AND_REWARD_NPC_ID).addOnTalkEvent(questId);
+		for (int npcId: START_NPC_IDS) {
+			qe.registerQuestNpc(npcId).addOnQuestStart(questId);
+			qe.registerQuestNpc(npcId).addOnTalkEvent(questId);
+		}
+		qe.registerOnQuestCompleted(questId);
 	}
 
 	@Override
 	public boolean onDialogEvent(QuestEnv env) {
-		Player player = env.getPlayer();
+		final Player player = env.getPlayer();
 		QuestState qs = player.getQuestStateList().getQuestState(questId);
 
-		if (env.getTargetId() != START_AND_REWARD_NPC_ID)
+		boolean isStartNpc = false;
+		for (int npcId : START_NPC_IDS) {
+			if (env.getTargetId() == npcId) {
+				isStartNpc = true;
+				break;
+			}
+		}
+
+		if (!isStartNpc)
 			return false;
 
 		if (env.getDialogActionId() == USE_OBJECT) {
@@ -49,7 +60,8 @@ public class _99003MonthlyDailyCompletionGoal extends AbstractQuestHandler {
 		if (qs == null || qs.isStartable()) {
 			switch (env.getDialogActionId()) {
 				case QUEST_SELECT:
-					return sendQuestDialog(env, 1011);
+					return sendQuestDialog(env, 4762);
+				case ASK_QUEST_ACCEPT:
 				case QUEST_ACCEPT:
 				case QUEST_ACCEPT_1:
 				case QUEST_ACCEPT_SIMPLE:
@@ -70,14 +82,14 @@ public class _99003MonthlyDailyCompletionGoal extends AbstractQuestHandler {
 		if (qs == null || qs.getStatus() != QuestStatus.START)
 			return;
 
-		int completions = qs.getQuestVarById(0);
+		int completions = qs.getQuestVarById(1);
 		if (completions >= REQUIRED_DAILY_COMPLETIONS)
 			return;
 
-		if (completions + 1 >= REQUIRED_DAILY_COMPLETIONS)
+		int next = completions + 1;
+		qs.setQuestVarById(1, next);
+		if (next >= REQUIRED_DAILY_COMPLETIONS)
 			qs.setStatus(QuestStatus.REWARD);
-		else
-			qs.setQuestVarById(0, completions + 1);
 
 		updateQuestStatus(env);
 	}

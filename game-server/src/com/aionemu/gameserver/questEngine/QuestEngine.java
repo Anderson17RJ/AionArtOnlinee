@@ -66,6 +66,8 @@ public class QuestEngine implements GameEngine {
 	private final List<Integer> onInvisibleTimerEnd = new ArrayList<>();
 	private final Map<AbyssRankEnum, List<Integer>> questOnKillRanked = new EnumMap<>(AbyssRankEnum.class);
 	private final Map<Integer, List<Integer>> questOnKillInWorld = new HashMap<>();
+	/** PvE NPC kills, keyed by the world/map where the NPC died. */
+	private final Map<Integer, List<Integer>> questOnKillNpcInWorld = new HashMap<>();
 	private final Map<Integer, List<Integer>> questOnUseSkill = new HashMap<>();
 	private final Map<Integer, Integer> questOnFailCraft = new HashMap<>();
 	private final Map<Integer, List<Integer>> questOnEquipItem = new HashMap<>();
@@ -134,6 +136,7 @@ public class QuestEngine implements GameEngine {
 		questOnPassFlyingRings.clear();
 		questOnKillRanked.clear();
 		questOnKillInWorld.clear();
+		questOnKillNpcInWorld.clear();
 		questOnKillInZone.clear();
 		questOnUseSkill.clear();
 		questOnFailCraft.clear();
@@ -189,6 +192,13 @@ public class QuestEngine implements GameEngine {
 				if (questHandler != null) {
 					env.setQuestId(questId);
 					questHandler.onKillEvent(env);
+				}
+			}
+			for (int questId : questOnKillNpcInWorld.getOrDefault(npc.getWorldId(), Collections.emptyList())) {
+				AbstractQuestHandler questHandler = getQuestHandlerByQuestId(questId);
+				if (questHandler != null) {
+					env.setQuestId(questId);
+					questHandler.onKillNpcInWorldEvent(env);
 				}
 			}
 		} catch (Exception ex) {
@@ -799,6 +809,14 @@ public class QuestEngine implements GameEngine {
 
 	public void registerOnKillInWorld(int worldId, int questId) {
 		questOnKillInWorld.computeIfAbsent(worldId, k -> new ArrayList<>()).add(questId);
+	}
+
+	/**
+	 * Registers a PvE event for kills of NPCs in a map. Unlike {@link #registerOnKillInWorld(int, int)},
+	 * this is dispatched by NPC deaths, not by player-versus-player kills.
+	 */
+	public void registerOnKillNpcInWorld(int worldId, int questId) {
+		questOnKillNpcInWorld.computeIfAbsent(worldId, k -> new ArrayList<>()).add(questId);
 	}
 
 	public void registerOnPassFlyingRings(String flyingRing, int questId) {

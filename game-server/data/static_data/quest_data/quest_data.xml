@@ -82483,9 +82483,25 @@
 		<rewards/>
 		<bonus level="5" type="MEDAL"/>
 	</quest>
-	<quest id="99003" name="[Monthly] Extendable Mythic" nameId="1801364" quest_zone="Sanctum" minlevel_permitted="65" max_repeat_count="255" cannot_share="true" race_permitted="PC_ALL" category="QUEST" repeat_cycle="MONTHLY">
-		<rewards gold="1000000" exp="1000000">
-			<reward_item item_id="186000031" count="10"/>
+	<quest id="99003" name="[Monthly] Extendable Mythic" nameId="1801364" quest_zone="Sanctum" minlevel_permitted="65" max_repeat_count="255" cannot_share="true" race_permitted="PC_ALL" category="EVENT" repeat_cycle="MONTHLY">
+		<rewards gold="10000000" exp="120000000">
+			<reward_item item_id="169405385" count="1"/>
+		</rewards>
+	</quest>
+	<quest id="99004" name="[Daily] Extendable Mythic" nameId="1801365" quest_zone="Sanctum" minlevel_permitted="65" max_repeat_count="255" cannot_share="true" race_permitted="PC_ALL" category="EVENT" repeat_cycle="ALL">
+		<rewards gold="1000000" exp="12000000">
+			<selectable_reward_item item_id="152012598" count="1"/>
+			<selectable_reward_item item_id="152012599" count="1"/>
+			<selectable_reward_item item_id="152012600" count="1"/>
+			<selectable_reward_item item_id="152012601" count="1"/>
+			<selectable_reward_item item_id="152012602" count="1"/>
+			<selectable_reward_item item_id="152012603" count="1"/>
+			<reward_item item_id="152012619" count="1"/>
+		</rewards>
+	</quest>
+	<quest id="99005" name="[Weekly] Extendable Mythic" nameId="1801366" quest_zone="Sanctum" minlevel_permitted="65" max_repeat_count="255" cannot_share="true" race_permitted="PC_ALL" category="EVENT" repeat_cycle="WED">
+		<rewards gold="5000000" exp="50000000">
+			<reward_item item_id="169405341" count="1"/>
 		</rewards>
 	</quest>
 </quests>
