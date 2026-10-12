@@ -107538,55 +107538,55 @@
 	<!-- MYTHIC EXTEND SWORD -->
 	<recipe_template id="155201915" nameid="2011783" skillid="40009" race="PC_ALL" skillpoint="1" productid="100001760" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012598"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200066"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 	<!-- MYTHIC EXTEND MACE -->
 	<recipe_template id="155201916" nameid="2011784" skillid="40009" race="PC_ALL" skillpoint="1" productid="100101354" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012599"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200067"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 	<!-- MYTHIC EXTEND DAGGER -->
 	<recipe_template id="155201917" nameid="2011785" skillid="40009" race="PC_ALL" skillpoint="1" productid="100201529" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012600"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200068"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 	<!-- MYTHIC EXTEND GREATSWORD -->
 	<recipe_template id="155201918" nameid="2011786" skillid="40009" race="PC_ALL" skillpoint="1" productid="100901395" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012601"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200069"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 	<!-- MYTHIC EXTEND POLEARM -->
 	<recipe_template id="155201919" nameid="2011787" skillid="40009" race="PC_ALL" skillpoint="1" productid="101301286" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012602"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200070"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 	<!-- MYTHIC EXTEND STAFF -->
 	<recipe_template id="155201920" nameid="2011788" skillid="40009" race="PC_ALL" skillpoint="1" productid="101501376" quantity="1" max_production_count="1">
 		<components_data>
-			<component quantity="1" itemid="169405385"/>
-			<component quantity="4" itemid="169405341"/>
-			<component quantity="20" itemid="152012603"/>
-			<component quantity="14" itemid="152012619"/>
+			<component quantity="1" itemid="190200063"/>
+			<component quantity="4" itemid="190200064"/>
+			<component quantity="20" itemid="190200071"/>
+			<component quantity="14" itemid="190200065"/>
 		</components_data>
 	</recipe_template>
 </recipe_templates>
