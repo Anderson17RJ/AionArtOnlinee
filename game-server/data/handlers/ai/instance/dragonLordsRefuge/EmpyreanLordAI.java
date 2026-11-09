@@ -41,11 +41,11 @@ public class EmpyreanLordAI extends GeneralNpcAI implements HpPhases.PhaseHandle
 		switch (getNpcId()) {
 			case 219488:
 			case 856020:
-				ThreadPoolManager.getInstance().schedule(() -> AIActions.useSkill(this, 20932), 8500);
+				scheduleInitialAttack(20932);
 				break;
 			case 219491:
 			case 856023:
-				ThreadPoolManager.getInstance().schedule(() -> AIActions.useSkill(this, 20936), 8500);
+				scheduleInitialAttack(20936);
 				break;
 			case 219489:
 			case 856021:
@@ -60,16 +60,28 @@ public class EmpyreanLordAI extends GeneralNpcAI implements HpPhases.PhaseHandle
 		}
 	}
 
+	private void scheduleInitialAttack(int skillId) {
+		ThreadPoolManager.getInstance().schedule(() -> AIActions.useSkill(this, skillId), 8500);
+		// Fallback in case the opening skill is interrupted or fails before onEndUseSkill is called.
+		ThreadPoolManager.getInstance().schedule(() -> engageTiamat(), 11500);
+	}
+
+	private void engageTiamat() {
+		Npc tiamat = getPosition().getWorldMapInstance().getNpc(tiamatId);
+		if (tiamat == null || tiamat.isDead())
+			return;
+		AIActions.targetCreature(this, tiamat);
+		getAggroList().addHate(tiamat, Integer.MAX_VALUE / 4);
+		setStateIfNot(AIState.FIGHT);
+		EmoteManager.emoteStartAttacking(getOwner(), tiamat);
+	}
+
 	@Override
 	public void onEndUseSkill(SkillTemplate skillTemplate, int skillLevel) {
 		switch (skillTemplate.getSkillId()) {
 			case 20932:
 			case 20936:
-				Npc tiamat = getPosition().getWorldMapInstance().getNpc(tiamatId);
-				AIActions.targetCreature(this, tiamat);
-				getAggroList().addHate(tiamat, Integer.MAX_VALUE / 4);
-				setStateIfNot(AIState.FIGHT);
-				EmoteManager.emoteStartAttacking(getOwner(), tiamat);
+				engageTiamat();
 				break;
 		}
 	}

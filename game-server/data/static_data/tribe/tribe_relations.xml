@@ -1444,7 +1444,7 @@
     </tribe>
     <tribe name="IDSTATION_POLYMORPH" base="USEALL">
         <aggro>IDSTATION_MONSTER</aggro>
-        <friend>PC_DARK PC</friend>
+        <friend>PC_DARK PC FIELD_OBJECT_ALL</friend>
         <none>IDSTATION_GUIDE</none>
     </tribe>
     <tribe name="IDSWEEP_BONUS" base="MONSTER">

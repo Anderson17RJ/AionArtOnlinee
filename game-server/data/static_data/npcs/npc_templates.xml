@@ -569481,7 +569481,7 @@
 		<bound_radius front="0.56" side="0.56" upper="3.92" />
 	</npc_template>
 	<npc_template npc_id="856020" level="65" name="kaisinel" name_id="356083" height="14" title_id="370536" group_drop="GODKAISINEL" rank="VETERAN" rating="LEGENDARY" tribe="GOD_KAISINEL" type="MONSTER" ai="empyrean_lord" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361">
+		<stats maxHp="16630120" msup="361">
 			<speeds walk="2" group_walk="2" run="10" run_fight="5.5" group_run_fight="10" />
 		</stats>
 		<equipment>
@@ -569490,14 +569490,14 @@
 		<bound_radius front="5" side="4" upper="14" />
 	</npc_template>
 	<npc_template npc_id="856021" level="65" name="kaisinel" name_id="356083" height="14" title_id="370536" group_drop="GODKAISINEL" rank="VETERAN" rating="LEGENDARY" tribe="GOD_KAISINEL" type="MONSTER" ai="empyrean_lord" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361" />
+		<stats maxHp="16630120" msup="361" />
 		<equipment>
 			<item>101501103</item>
 		</equipment>
 		<bound_radius front="5" side="4" upper="14" />
 	</npc_template>
 	<npc_template npc_id="856022" level="65" name="kaisinel" name_id="356083" height="14" title_id="370536" group_drop="GODKAISINEL" rank="VETERAN" rating="LEGENDARY" tribe="GOD_KAISINEL" type="MONSTER" ai="aggressive" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361">
+		<stats maxHp="16630120" msup="361">
 			<speeds walk="2" group_walk="2" run="10" run_fight="5.5" group_run_fight="10" />
 		</stats>
 		<equipment>
@@ -569506,7 +569506,7 @@
 		<bound_radius front="5" side="4" upper="14" />
 	</npc_template>
 	<npc_template npc_id="856023" level="65" name="marchutan" name_id="356084" height="13" title_id="370537" group_drop="GODMARKUTAN" rank="VETERAN" rating="LEGENDARY" tribe="GOD_MARCHUTAN" type="MONSTER" ai="empyrean_lord" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361">
+		<stats maxHp="16630120" msup="361">
 			<speeds walk="2" group_walk="2" run="10" run_fight="5.5" group_run_fight="10" />
 		</stats>
 		<equipment>
@@ -569515,14 +569515,14 @@
 		<bound_radius front="5.5" side="3.75" upper="13" />
 	</npc_template>
 	<npc_template npc_id="856024" level="65" name="marchutan" name_id="356084" height="13" title_id="370537" group_drop="GODMARKUTAN" rank="VETERAN" rating="LEGENDARY" tribe="GOD_MARCHUTAN" type="MONSTER" ai="empyrean_lord" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361" />
+		<stats maxHp="16630120" msup="361" />
 		<equipment>
 			<item>101501104</item>
 		</equipment>
 		<bound_radius front="5.5" side="3.75" upper="13" />
 	</npc_template>
 	<npc_template npc_id="856025" level="65" name="marchutan" name_id="356084" height="13" title_id="370537" group_drop="GODMARKUTAN" rank="VETERAN" rating="LEGENDARY" tribe="GOD_MARCHUTAN" type="MONSTER" ai="aggressive" srange="60" arange="11" attack_speed="1200" hpgauge="27">
-		<stats maxHp="9238956" msup="361">
+		<stats maxHp="16630120" msup="361">
 			<speeds walk="2" group_walk="2" run="10" run_fight="5.5" group_run_fight="10" />
 		</stats>
 		<equipment>

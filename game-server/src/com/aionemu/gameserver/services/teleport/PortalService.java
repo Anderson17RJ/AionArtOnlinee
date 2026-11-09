@@ -41,6 +41,9 @@ import com.aionemu.gameserver.world.WorldPosition;
 public class PortalService {
 
 	private static Logger log = LoggerFactory.getLogger(PortalService.class);
+	private static final int ATURAM_SKY_FORTRESS = 300240000;
+	private static final int ATURAM_MAGMA_TACHYSPHERE_A = 21807;
+	private static final int ATURAM_MAGMA_TACHYSPHERE_B = 21808;
 
 	public static void port(PortalPath portalPath, Player player, Npc npc) {
 		port(portalPath, player, npc, (byte) 0);
@@ -116,11 +119,13 @@ public class PortalService {
 				return;
 			}
 			if (mapId == player.getWorldId()) { // teleport within this instance
+				removeAturamTachysphereEffects(player);
 				TeleportService.teleportTo(player, mapId, player.getInstanceId(), loc.getX(), loc.getY(), loc.getZ(), loc.getH());
 				return;
 			}
 		}
 
+		removeAturamTachysphereEffects(player);
 		PlayerGroup group = player.getPlayerGroup();
 		switch (maxPlayers) {
 			case 0:
@@ -188,6 +193,13 @@ public class PortalService {
 					}
 				}
 		}
+	}
+
+	private static void removeAturamTachysphereEffects(Player player) {
+		if (player.getWorldId() != ATURAM_SKY_FORTRESS)
+			return;
+		player.getEffectController().removeEffect(ATURAM_MAGMA_TACHYSPHERE_A);
+		player.getEffectController().removeEffect(ATURAM_MAGMA_TACHYSPHERE_B);
 	}
 
 	private static boolean checkMentor(Player player, int mapId) {
