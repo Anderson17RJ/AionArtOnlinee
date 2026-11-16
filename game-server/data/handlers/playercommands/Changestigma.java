@@ -1,10 +1,11 @@
 package playercommands;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.aionemu.gameserver.dao.PlayerStigmaSetDAO;
+import com.aionemu.gameserver.dao.PlayerStigmaSetDAO.SavedStigma;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Equipment;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -34,9 +35,9 @@ public class Changestigma extends PlayerCommand {
 	}
 
 	private void save(Player player, String setName) {
-		Map<Integer, Long> items = new LinkedHashMap<>();
+		List<SavedStigma> items = new ArrayList<>();
 		for (Item stigma : player.getEquipment().getEquippedItemsAllStigma())
-			items.put(stigma.getObjectId(), stigma.getEquipmentSlot());
+			items.add(new SavedStigma(stigma.getObjectId(), stigma.getItemId(), stigma.getEquipmentSlot()));
 		if (items.isEmpty()) {
 			sendInfo(player, "You have no stigmas equipped to save.");
 			return;
@@ -48,7 +49,7 @@ public class Changestigma extends PlayerCommand {
 	}
 
 	private void load(Player player, String setName) {
-		Map<Integer, Long> items = PlayerStigmaSetDAO.load(player.getObjectId(), setName);
+		List<SavedStigma> items = PlayerStigmaSetDAO.load(player.getObjectId(), setName);
 		if (items.isEmpty()) {
 			sendInfo(player, "Stigma set '" + setName + "' does not exist or is empty.");
 			return;

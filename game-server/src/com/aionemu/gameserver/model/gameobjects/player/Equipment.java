@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
 import com.aionemu.gameserver.controllers.observer.ObserverType;
 import com.aionemu.gameserver.dao.InventoryDAO;
+import com.aionemu.gameserver.dao.PlayerStigmaSetDAO.SavedStigma;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.TaskId;
@@ -387,8 +388,8 @@ public class Equipment implements Persistable {
 		}
 	}
 
-	/** Replaces only stigma stones with the items referenced by a saved stigma set. */
-	public StigmaSetLoadResult loadStigmaSet(Map<Integer, Long> savedItems) {
+	/** Equips the strongest available copy of each saved stigma type in its saved slot. */
+	public StigmaSetLoadResult loadStigmaSet(List<SavedStigma> savedItems) {
 		if (savedItems == null || savedItems.isEmpty())
 			return StigmaSetLoadResult.EMPTY_SET;
 		if (owner.getController().isInCombat())
@@ -400,16 +401,20 @@ public class Equipment implements Persistable {
 			Map<Item, Long> targetItems = new LinkedHashMap<>();
 			long occupiedSlots = 0;
 			long price = 0;
-			for (Map.Entry<Integer, Long> entry : savedItems.entrySet()) {
-				Item item = getEquippedItemByObjId(entry.getKey());
-				if (item == null)
-					item = owner.getInventory().getItemByObjId(entry.getKey());
+			for (SavedStigma entry : savedItems) {
+				Item savedItem = getEquippedItemByObjId(entry.itemUniqueId());
+				if (savedItem == null)
+					savedItem = owner.getInventory().getItemByObjId(entry.itemUniqueId());
+				// Older presets may not have item_id yet. Their original item must still exist to infer its type.
+				int itemId = entry.itemId() != 0 ? entry.itemId() : savedItem == null ? 0 : savedItem.getItemId();
+				Item item = findBestStigmaSetItem(itemId, entry.equipmentSlot(), entry.itemUniqueId(), targetItems);
 				if (item == null)
 					return StigmaSetLoadResult.ITEM_MISSING;
-				if (targetItems.put(item, entry.getValue()) != null || !isValidStigmaSetItem(item, entry.getValue()) || (occupiedSlots & entry.getValue()) != 0)
+				if ((occupiedSlots & entry.equipmentSlot()) != 0)
 					return StigmaSetLoadResult.INVALID_SET;
-				occupiedSlots |= entry.getValue();
-				if (!item.isEquipped() || item.getEquipmentSlot() != entry.getValue())
+				targetItems.put(item, entry.equipmentSlot());
+				occupiedSlots |= entry.equipmentSlot();
+				if (!item.isEquipped() || item.getEquipmentSlot() != entry.equipmentSlot())
 					price += StigmaService.getEquipPrice(owner, item);
 			}
 			if (owner.getInventory().getKinah() < price)
@@ -427,6 +432,35 @@ public class Equipment implements Persistable {
 			}
 			return StigmaSetLoadResult.SUCCESS;
 		}
+	}
+
+	private Item findBestStigmaSetItem(int itemId, long slot, int savedUniqueId, Map<Item, Long> selected) {
+		if (itemId == 0)
+			return null;
+		Item best = null;
+		for (Item candidate : getEquippedItemsAllStigma())
+			if (candidate.getItemId() == itemId && !selected.containsKey(candidate) && isValidStigmaSetItem(candidate, slot)
+				&& isPreferredStigma(candidate, best, slot, savedUniqueId))
+				best = candidate;
+		for (Item candidate : owner.getInventory().getItemsByItemId(itemId))
+			if (!selected.containsKey(candidate) && isValidStigmaSetItem(candidate, slot)
+				&& isPreferredStigma(candidate, best, slot, savedUniqueId))
+				best = candidate;
+		return best;
+	}
+
+	private static boolean isPreferredStigma(Item candidate, Item best, long slot, int savedUniqueId) {
+		if (best == null)
+			return true;
+		if (candidate.getEnchantLevel() != best.getEnchantLevel())
+			return candidate.getEnchantLevel() > best.getEnchantLevel();
+		if (candidate.getObjectId() == savedUniqueId || best.getObjectId() == savedUniqueId)
+			return candidate.getObjectId() == savedUniqueId;
+		boolean candidateInSlot = candidate.isEquipped() && candidate.getEquipmentSlot() == slot;
+		boolean bestInSlot = best.isEquipped() && best.getEquipmentSlot() == slot;
+		if (candidateInSlot != bestInSlot)
+			return candidateInSlot;
+		return candidate.getObjectId() < best.getObjectId();
 	}
 
 	private boolean isValidGearSetItem(Item item, long slot) {
