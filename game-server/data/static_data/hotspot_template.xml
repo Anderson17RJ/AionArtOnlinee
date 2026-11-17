@@ -146,4 +146,9 @@
 	<hotspot_location id="84" worldId="120010000" x="1178.0" y="1170.0" z="208.0" race="ASMODIANS" price="1934"/>
 	<!-- Convent of Marchutan Teleport Statue -->
 	<hotspot_location id="85" worldId="120010000" x="1602.0" y="1389.0" z="193.0" race="ASMODIANS" price="1934"/>
+	<!-- DARKPOETA -->
+	<hotspot_location id="86" worldId="300040000" x="1224.0" y="418.0" z="140.0" race="PC_ALL" price="1934"/>
+	<hotspot_location id="87" worldId="300040000" x="744.0" y="553.0" z="110.0" race="PC_ALL" price="1934"/>
+	<hotspot_location id="88" worldId="300040000" x="679.0" y="1187.0" z="142.0" race="PC_ALL" price="1934"/>
+	<hotspot_location id="89" worldId="300040000" x="254.0" y="490.0" z="113.0" race="PC_ALL" price="1934"/>
 </hotspot_template>

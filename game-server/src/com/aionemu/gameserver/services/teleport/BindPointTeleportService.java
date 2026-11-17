@@ -96,7 +96,7 @@ public class BindPointTeleportService {
 			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE());
 			return false;
 		}
-		if (!(player.getRace() == Race.PC_ALL) && player.getRace() != hotspot.getRace()) {
+		if (hotspot.getRace() != Race.PC_ALL && player.getRace() != hotspot.getRace()) {
 			AuditLogger.log(player, "tried to use hotspot teleport " + hotspot.getId() + " for invalid race " + player.getRace() + ", expected " + hotspot.getRace());
 			return false;
 		}
